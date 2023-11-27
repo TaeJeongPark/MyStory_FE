@@ -2,7 +2,7 @@
   import HeaderComponent from '@/components/NaviBarComponent.vue';
 
   export default {
-    name: 'AboutMeComponent',
+    name: 'GrowthProcessComponent',
     data : function(){
       return {
         characterCountSpace: 0,
@@ -37,7 +37,7 @@
       <div>
         <textarea class="input-box" type="text" placeholder="당신의 성장 과정을 적어 주세요" @keyup="cntCharacters"></textarea>
       </div>
-      <div>
+      <div style="margin: 10px 0px">
         <table style="width: 100%">
           <tr>
             <td style="width: 20%;">
@@ -54,6 +54,9 @@
             </td>
           </tr>
         </table>
+      </div>
+      <div>
+        <textarea class="input-box" style="margin-top: 5px; background-color: lightgray; display: none" type="text" readonly></textarea>
       </div>
     </div>
   </body>
