@@ -20,7 +20,7 @@
 
 <template>
   <body class="default-margin">
-  <img src="../../public/logo.svg" alt="로고" style="margin-bottom: 400px">
+  <img src="../../public/logo.svg" alt="로고" style="margin-bottom: 15%">
   <main class="form-signin w-100 m-auto">
     <form>
       <h1 class="title center typing text">당신의 이야기를 들려주세요</h1>
