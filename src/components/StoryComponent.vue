@@ -7,11 +7,14 @@ export default {
   name: 'StoryComponent',
   data : function(){
     return {
-      storyData : [],
-      classList : [],
-      tableRows: [], // 테이블의 행을 저장할 배열
-      nextId : 1, // 다음 행에 할당될 ID
-      imageUrl : null,
+      storyData: [],
+      imageUrl: null,
+      schools: [{startMonth: '', endMonth: '', schoolName: '', departmentName: '', graduateStatus: '졸업예정', gpa: '', gpaMax: '',}],
+      certificates: [{month: '', name: ''}],
+      educations: [{startMonth: '', endMonth: '', educationName: '', supervisionName: ''}],
+      awards: [{month: '', name: '', supervisionName: ''}],
+      careers: [{startMonth: '', endMonth: '', duty: '', companyName: ''}],
+      activities: [{startMonth: '', endMonth: '', content: ''}],
     };
   },
   components: {
@@ -45,77 +48,105 @@ export default {
       }
     },
     addSchoolRow() {
-      let $tr = $("<tr>",{});
-      let $td1 = $("<input class=\"input-box\" type=\"month\" style=\"width: 126px; margin-top: 5px\">\n" +
-          "              <span>~</span>\n" +
-          "              <input class=\"input-box\" type=\"month\" style=\"width: 126px;\">\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 180px;\" placeholder=\"학교명을 입력해 주세요\">\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 180px;\" placeholder=\"학과명을 입력해 주세요\">\n" +
-          "              <select class=\"input-box\" style=\"width: 112px;\" id=\"graduateSelect\">\n" +
-          "                <option value=\"졸업예정\">졸업예정</option>\n" +
-          "                <option value=\"졸업\">졸업</option>\n" +
-          "              </select>\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 74px; text-align: center;\" placeholder=\"0.00\">\n" +
-          "              <span>/</span>\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 74px; text-align: center;\" placeholder=\"0.00\"><br>");
+      // 이전 항목이 입력 되지 않은 경우 경고창 출력
+      if (this.schools[this.schools.length - 1].schoolName === '') {
+        alert('이전 학력을 입력한 후 추가를 눌러 주세요');
+        return;
+      }
 
-      $tr.append($td1);
+      // 학력 추가
+      this.schools.push({
+        startMonth: '',
+        endMonth: '',
+        schoolName: '',
+        departmentName: '',
+        graduateStatus: '졸업예정',
+        gpa: '',
+        gpaMax: '',
+      });
 
-      $('#schoolTable').append($tr);
+      console.log(this.schools);
     },
     addCertificateRow() {
-      let $tr = $("<tr>",{});
-      let $td1 = $("<input class=\"input-box\" type=\"month\" style=\"width: 126px; margin-top: 5px\">\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 180px;\" placeholder=\"자격증명을 입력해 주세요\">\n");
+      // 이전 자격증이 입력 되지 않은 경우 경고창 출력
+      if (this.certificates[this.certificates.length - 1].name === '') {
+        alert('이전 자격증을 입력한 후 추가를 눌러 주세요');
+        return;
+      }
 
-      $tr.append($td1);
+      // 자격증 추가
+      this.certificates.push({
+        month: '',
+        name: '',
+      });
 
-      $('#certificateTable').append($tr);
+      console.log(this.certificates);
     },
     addEducationRow() {
-      let $tr = $("<tr>", {});
-      let $td1 = $("<input class=\"input-box\" type=\"month\" style=\"width: 126px; margin-top: 5px\">\n" +
-          "              <span>~</span>\n" +
-          "              <input class=\"input-box\" type=\"month\" style=\"width: 126px;\">\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 180px;\" placeholder=\"교육명을 입력해 주세요\">\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 180px;\" placeholder=\"기관명을 입력해 주세요\">\n");
+      // 이전 교육이 입력 되지 않은 경우 경고창 출력
+      if (this.educations[this.educations.length - 1].educationName === '') {
+        alert('이전 교육을 입력한 후 추가를 눌러 주세요');
+        return;
+      }
 
-      $tr.append($td1);
+      // 교육 추가
+      this.educations.push({
+        startMonth: '',
+        endMonth: '',
+        educationName: '',
+        supervisionName: '',
+      });
 
-      $('#educationTable').append($tr);
+      console.log(this.educations);
     },
     addAwardsRow() {
-      let $tr = $("<tr>", {});
-      let $td1 = $("<input class=\"input-box\" type=\"month\" style=\"width: 126px; margin-top: 5px\">\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 180px;\" placeholder=\"수상명을 입력해 주세요\">\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 180px;\" placeholder=\"기관명을 입력해 주세요\">\n");
+      // 이전 수상이 입력 되지 않은 경우 경고창 출력
+      if (this.awards[this.awards.length - 1].name === '') {
+        alert('이전 수상을 입력한 후 추가를 눌러 주세요');
+        return;
+      }
 
-      $tr.append($td1);
+      // 수상 추가
+      this.awards.push({
+        month: '',
+        name: '',
+        supervisionName: '',
+      });
 
-      $('#awardsTable').append($tr);
+      console.log(this.awards);
     },
     addCareerRow() {
-      let $tr = $("<tr>", {});
-      let $td1 = $("<input class=\"input-box\" type=\"month\" style=\"width: 126px; margin-top: 5px\">\n" +
-          "              <span>~</span>\n" +
-          "              <input class=\"input-box\" type=\"month\" style=\"width: 126px;\">\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 180px;\" placeholder=\"직무를 입력해 주세요\">\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 180px;\" placeholder=\"회사명을 입력해 주세요\">\n");
+      // 이전 경력이 입력 되지 않은 경우 경고창 출력
+      if (this.careers[this.careers.length - 1].companyName === '') {
+        alert('이전 경력을 입력한 후 추가를 눌러 주세요');
+        return;
+      }
 
-      $tr.append($td1);
+      // 경력 추가
+      this.careers.push({
+        startMonth: '',
+        endMonth: '',
+        duty: '',
+        companyName: '',
+      });
 
-      $('#careerTable').append($tr);
+      console.log(this.careers);
     },
     addActivityRow() {
-      let $tr = $("<tr>", {});
-      let $td1 = $("<input class=\"input-box\" type=\"month\" style=\"width: 126px; margin-top: 5px\">\n" +
-          "              <span>~</span>\n" +
-          "              <input class=\"input-box\" type=\"month\" style=\"width: 126px;\">\n" +
-          "              <input class=\"input-box\" type=\"text\" style=\"width: 400px;\" placeholder=\"활동 내용을 입력해 주세요\">\n");
+      // 이전 활동이 입력 되지 않은 경우 경고창 출력
+      if (this.activities[this.activities.length - 1].content === '') {
+        alert('이전 활동을 입력한 후 추가를 눌러 주세요');
+        return;
+      }
 
-      $tr.append($td1);
+      // 활동 추가
+      this.activities.push({
+        startMonth: '',
+        endMonth: '',
+        content: '',
+      });
 
-      $('#activityTable').append($tr);
+      console.log(this.activities);
     },
     next() {
 
@@ -126,7 +157,50 @@ export default {
       } else {
         email = $('#email').val() + '@' + $('#emailSelect').val();
       }
+      
+      // 학교 배열 유효 데이터 가공
+      for (let i = 0; i < this.schools.length; i++) {
+        if (this.schools[i].schoolName === '') {
+          this.schools[i].splice(i, 1);
+        }
+      }
 
+      // 자격증 배열 유효 데이터 가공
+      for (let i = 0; i < this.certificates.length; i++) {
+        if (this.certificates[i].name === '') {
+          this.certificates[i].splice(i, 1);
+        }
+      }
+
+      // 교육 배열 유효 데이터 가공
+      for (let i = 0; i < this.educations.length; i++) {
+        if (this.educations[i].educationName === '') {
+          this.educations[i].splice(i, 1);
+        }
+      }
+
+      // 수상 배열 유효 데이터 가공
+      for (let i = 0; i < this.awards.length; i++) {
+        if (this.awards[i].name === '') {
+          this.awards[i].splice(i, 1);
+        }
+      }
+
+      // 경력 배열 유효 데이터 가공
+      for (let i = 0; i < this.careers.length; i++) {
+        if (this.careers[i].companyName === '') {
+          this.careers[i].splice(i, 1);
+        }
+      }
+
+      // 활동 배열 유효 데이터 가공
+      for (let i = 0; i < this.activities.length; i++) {
+        if (this.activities[i].content === '') {
+          this.activities[i].splice(i, 1);
+        }
+      }
+
+      // 데이터 저장
       this.storyData.push(
           {
             imageUrl : this.imageUrl,
@@ -138,17 +212,17 @@ export default {
             address : $('#address').val(),
             militaryService : $('#military-service').val(),
             introduction : $('#introduction').val(),
-            school : [],
-            certificate : [],
-            education : [],
-            awarded : [],
-            career : [],
-            activity : [],
+            school : this.schools,
+            certificate : this.certificates,
+            education : this.educations,
+            awarded : this.awards,
+            career : this.careers,
+            activity : this.activities,
             languages : $('#languages').val(),
             frameworkLibrary : $('#framework-library').val(),
             server : $('#server').val(),
             toolDevops : $('#tool-devops').val(),
-            dnvironment : $('#dnvironment').val(),
+            environment : $('#environment').val(),
             etc : $('#etc').val(),
           }
       );
@@ -234,50 +308,46 @@ export default {
       </div>
       <div class="block">
         <div class="title-small">학력</div>
-        <table>
-          <tbody id="schoolTable">
-          <tr>
-            <input class="input-box" type="month" style="width: 126px;" id="school-start-month1">
-            <span>~</span>
-            <input class="input-box" type="month" style="width: 126px;" id="school-end-month1">
-            <input class="input-box" type="text" style="width: 180px;" placeholder="학교명을 입력해 주세요" id="school-name1">
-            <input class="input-box" type="text" style="width: 180px;" placeholder="학과명을 입력해 주세요" id="department_name1">
-            <select class="input-box" style="width: 112px;" id="graduation-status-select">
-              <option value="졸업예정">졸업예정</option>
-              <option value="졸업">졸업</option>
-            </select>
-            <input class="input-box" type="text" style="width: 74px; text-align: center;" placeholder="0.00" id="score">
-            <span>/</span>
-            <input class="input-box" type="text" style="width: 74px; text-align: center;" placeholder="0.00" id="max-score"><br>
+        <table id="schoolTable">
+          <tr v-for="(school, index) in schools" :key="index">
+            <td>
+              <input class="input-box" type="month" style="width: 126px; margin-top: 5px" v-model="school.startMonth">
+              <span>~</span>
+              <input class="input-box" type="month" style="width: 126px;" v-model="school.endMonth">
+              <input class="input-box" type="text" style="width: 180px;" placeholder="학교명을 입력해 주세요" v-model="school.schoolName">
+              <input class="input-box" type="text" style="width: 180px;" placeholder="학과명을 입력해 주세요" v-model="school.departmentName">
+              <select class="input-box" style="width: 112px;" id="graduateSelect" v-model="school.graduateStatus">
+                <option value="졸업예정">졸업예정</option>
+                <option value="졸업">졸업</option>
+              </select>
+              <input class="input-box" type="text" style="width: 74px; text-align: center;" placeholder="0.00" v-model="school.gpa">
+              <span>/</span>
+              <input class="input-box" type="text" style="width: 74px; text-align: center;" placeholder="0.00" v-model="school.gpaMax">
+            </td>
           </tr>
-          </tbody>
         </table>
-        <button class="btn-small center" type="button" style="margin-top: 10px" @click="addSchoolRow()">추가</button>
+        <button class="btn-small center" type="button" style="margin-top: 10px" @click="addSchoolRow">추가</button>
       </div>
       <div class="block">
         <div class="title-small">자격증</div>
-        <table>
-          <tbody id="certificateTable">
-          <tr>
-            <input class="input-box" type="month" style="width: 126px;" id="certificate-month1">
-            <input class="input-box" type="text" style="width: 180px;" placeholder="자격증명을 입력해 주세요" id="certificate-name1">
+        <table id="certificateTable">
+          <tr v-for="(certificate, index) in certificates" :key="index">
+            <input class="input-box" type="month" style="width: 126px;" v-model="certificate.month">
+            <input class="input-box" type="text" style="width: 180px;" placeholder="자격증명을 입력해 주세요" v-model="certificate.name">
           </tr>
-          </tbody>
         </table>
         <button class="btn-small center" type="button" style="margin-top: 10px" @click="addCertificateRow()">추가</button>
       </div>
       <div class="block">
         <div class="title-small">교육</div>
-        <table>
-          <tbody id="educationTable">
+        <table id="educationTable">
           <tr>
-            <input class="input-box" type="month" style="width: 126px;" id="education-month1">
+            <input class="input-box" type="month" style="width: 126px;" v-model="education">
             <span>~</span>
             <input class="input-box" type="month" style="width: 126px;">
             <input class="input-box" type="text" style="width: 180px;" placeholder="교육명을 입력해 주세요" id="education-name1">
             <input class="input-box" type="text" style="width: 180px;" placeholder="기관명을 입력해 주세요" id="education-supervision_name1">
           </tr>
-          </tbody>
         </table>
         <button class="btn-small center" type="button" style="margin-top: 10px" @click="addEducationRow()">추가</button>
       </div>
