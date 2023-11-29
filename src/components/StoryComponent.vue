@@ -1,242 +1,242 @@
 <script>
-import $ from 'jquery';
-import HeaderComponent from '@/components/NaviBarComponent.vue';
-import store from "@/vuex/store";
+  import $ from 'jquery';
+  import HeaderComponent from '@/components/NaviBarComponent.vue';
+  import store from "@/vuex/store";
 
-export default {
-  name: 'StoryComponent',
-  data : function(){
-    return {
-      storyData: [],
-      imgUrl: null,
-      imgBlob: null,
-      schools: [{startMonth: '', endMonth: '', schoolName: '', departmentName: '', graduateStatus: '졸업예정', gpa: '', gpaMax: '',}],
-      certificates: [{month: '', name: ''}],
-      educations: [{startMonth: '', endMonth: '', name: '', supervisionName: ''}],
-      awards: [{month: '', name: '', supervisionName: ''}],
-      careers: [{startMonth: '', endMonth: '', duty: '', companyName: ''}],
-      activities: [{startMonth: '', endMonth: '', content: ''}],
-    };
-  },
-  components: {
-    HeaderComponent
-  },
-  methods: {
-    emailDirectSelect() {
-      $('#emailSelect').change(function () {
-        if ($(this).val() === 'direct') {
-          $('#selectDirect').css('display', 'inline-block');
-        } else {
-          $('#selectDirect').css('display', 'none');
-        }
-      });
+  export default {
+    name: 'StoryComponent',
+    data : function(){
+      return {
+        storyData: [],
+        imgUrl: null,
+        imgBlob: null,
+        schools: [{startMonth: '', endMonth: '', schoolName: '', departmentName: '', graduateStatus: '졸업예정', gpa: '', gpaMax: '',}],
+        certificates: [{month: '', name: ''}],
+        educations: [{startMonth: '', endMonth: '', name: '', supervisionName: ''}],
+        awards: [{month: '', name: '', supervisionName: ''}],
+        careers: [{startMonth: '', endMonth: '', duty: '', companyName: ''}],
+        activities: [{startMonth: '', endMonth: '', content: ''}],
+      };
     },
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-
-      if (file) {
-        // 파일을 읽기 위한 FileReader 객체 생성
-        const reader = new FileReader();
-
-        // 파일 읽기가 완료되면 호출되는 콜백 함수
-        reader.onload = () => {
-          // 읽어온 이미지 데이터를 imageUrl에 할당하여 이미지 표시
-          this.imgUrl = reader.result;
-        };
-
-        // 파일을 읽어오기
-        reader.readAsDataURL(file);
-
-        // 이미지를 Blob으로 변환
-        const imgBlob = new Blob([file], {type: file.type});
-        this.imgBlob = imgBlob;
-      }
+    components: {
+      HeaderComponent
     },
-    addSchoolRow() {
-      // 이전 항목이 입력 되지 않은 경우 경고창 출력
-      if (this.schools[this.schools.length - 1].schoolName === '') {
-        alert('이전 학력을 입력한 후 추가를 눌러 주세요');
-        return;
-      }
-
-      // 학력 추가
-      this.schools.push({
-        startMonth: '',
-        endMonth: '',
-        schoolName: '',
-        departmentName: '',
-        graduateStatus: '졸업예정',
-        gpa: '',
-        gpaMax: '',
-      });
-
-      console.log(this.schools);
-    },
-    addCertificateRow() {
-      // 이전 자격증이 입력 되지 않은 경우 경고창 출력
-      if (this.certificates[this.certificates.length - 1].name === '') {
-        alert('이전 자격증을 입력한 후 추가를 눌러 주세요');
-        return;
-      }
-
-      // 자격증 추가
-      this.certificates.push({
-        month: '',
-        name: '',
-      });
-
-      console.log(this.certificates);
-    },
-    addEducationRow() {
-      // 이전 교육이 입력 되지 않은 경우 경고창 출력
-      if (this.educations[this.educations.length - 1].name === '') {
-        alert('이전 교육을 입력한 후 추가를 눌러 주세요');
-        return;
-      }
-
-      // 교육 추가
-      this.educations.push({
-        startMonth: '',
-        endMonth: '',
-        educationName: '',
-        supervisionName: '',
-      });
-
-      console.log(this.educations);
-    },
-    addAwardsRow() {
-      // 이전 수상이 입력 되지 않은 경우 경고창 출력
-      if (this.awards[this.awards.length - 1].name === '') {
-        alert('이전 수상을 입력한 후 추가를 눌러 주세요');
-        return;
-      }
-
-      // 수상 추가
-      this.awards.push({
-        month: '',
-        name: '',
-        supervisionName: '',
-      });
-
-      console.log(this.awards);
-    },
-    addCareerRow() {
-      // 이전 경력이 입력 되지 않은 경우 경고창 출력
-      if (this.careers[this.careers.length - 1].companyName === '') {
-        alert('이전 경력을 입력한 후 추가를 눌러 주세요');
-        return;
-      }
-
-      // 경력 추가
-      this.careers.push({
-        startMonth: '',
-        endMonth: '',
-        duty: '',
-        companyName: '',
-      });
-
-      console.log(this.careers);
-    },
-    addActivityRow() {
-      // 이전 활동이 입력 되지 않은 경우 경고창 출력
-      if (this.activities[this.activities.length - 1].content === '') {
-        alert('이전 활동을 입력한 후 추가를 눌러 주세요');
-        return;
-      }
-
-      // 활동 추가
-      this.activities.push({
-        startMonth: '',
-        endMonth: '',
-        content: '',
-      });
-
-      console.log(this.activities);
-    },
-    next() {
-
-      // 이메일 직접 입력 여부 판별
-      let email = '';
-      if ($('#emailSelect').val() == 'direct') {
-        email = $('#email').val() + '@' + $('#emailSelectDirect').val();
-      } else {
-        email = $('#email').val() + '@' + $('#emailSelect').val();
-      }
-      
-      // 학교 배열 유효 데이터 가공
-      for (let i = 0; i < this.schools.length; i++) {
-        if (this.schools[i].schoolName === '') {
-          this.schools[i].splice(i, 1);
-        }
-      }
-
-      // 자격증 배열 유효 데이터 가공
-      for (let i = 0; i < this.certificates.length; i++) {
-        if (this.certificates[i].name === '') {
-          this.certificates[i].splice(i, 1);
-        }
-      }
-
-      // 교육 배열 유효 데이터 가공
-      for (let i = 0; i < this.educations.length; i++) {
-        if (this.educations[i].name === '') {
-          this.educations[i].splice(i, 1);
-        }
-      }
-
-      // 수상 배열 유효 데이터 가공
-      for (let i = 0; i < this.awards.length; i++) {
-        if (this.awards[i].name === '') {
-          this.awards[i].splice(i, 1);
-        }
-      }
-
-      // 경력 배열 유효 데이터 가공
-      for (let i = 0; i < this.careers.length; i++) {
-        if (this.careers[i].companyName === '') {
-          this.careers[i].splice(i, 1);
-        }
-      }
-
-      // 활동 배열 유효 데이터 가공
-      for (let i = 0; i < this.activities.length; i++) {
-        if (this.activities[i].content === '') {
-          this.activities[i].splice(i, 1);
-        }
-      }
-
-      // 데이터 저장
-      this.storyData.push(
-          {
-            imageUrl : this.imgUrl,
-            imgBlob : this.imgBlob,
-            desireJob : $('#desireJob').val(),
-            name : $('#name').val(),
-            birthday : $('#birthday').val(),
-            email : email,
-            phone : $('#phone1').val() + '-' + $('#phone2').val() + '-' + $('#phone3').val(),
-            address : $('#address').val(),
-            militaryService : $('#militaryService').val(),
-            introduction : $('#introduction').val(),
-            school : this.schools,
-            certificate : this.certificates,
-            education : this.educations,
-            awarded : this.awards,
-            career : this.careers,
-            activity : this.activities,
-            languages : $('#languages').val(),
-            frameworkLibrary : $('#frameworkLibrary').val(),
-            server : $('#server').val(),
-            toolDevops : $('#toolDevops').val(),
-            environment : $('#environment').val(),
-            etc : $('#etc').val(),
+    methods: {
+      emailDirectSelect() {
+        $('#emailSelect').change(function () {
+          if ($(this).val() === 'direct') {
+            $('#selectDirect').css('display', 'inline-block');
+          } else {
+            $('#selectDirect').css('display', 'none');
           }
-      );
-      store.commit('setStoryPageData', this.storyData); // 데이터 저장
-      this.$router.push('/growth'); // 성장 과정 페이지로 이동
+        });
+      },
+      handleFileUpload(event) {
+        const file = event.target.files[0];
+
+        if (file) {
+          // 파일을 읽기 위한 FileReader 객체 생성
+          const reader = new FileReader();
+
+          // 파일 읽기가 완료되면 호출되는 콜백 함수
+          reader.onload = () => {
+            // 읽어온 이미지 데이터를 imageUrl에 할당하여 이미지 표시
+            this.imgUrl = reader.result;
+          };
+
+          // 파일을 읽어오기
+          reader.readAsDataURL(file);
+
+          // 이미지를 Blob으로 변환
+          const imgBlob = new Blob([file], {type: file.type});
+          this.imgBlob = imgBlob;
+        }
+      },
+      addSchoolRow() {
+        // 이전 항목이 입력 되지 않은 경우 경고창 출력
+        if (this.schools[this.schools.length - 1].schoolName === '') {
+          alert('이전 학력을 입력한 후 추가를 눌러 주세요');
+          return;
+        }
+
+        // 학력 추가
+        this.schools.push({
+          startMonth: '',
+          endMonth: '',
+          schoolName: '',
+          departmentName: '',
+          graduateStatus: '졸업예정',
+          gpa: '',
+          gpaMax: '',
+        });
+
+        console.log(this.schools);
+      },
+      addCertificateRow() {
+        // 이전 자격증이 입력 되지 않은 경우 경고창 출력
+        if (this.certificates[this.certificates.length - 1].name === '') {
+          alert('이전 자격증을 입력한 후 추가를 눌러 주세요');
+          return;
+        }
+
+        // 자격증 추가
+        this.certificates.push({
+          month: '',
+          name: '',
+        });
+
+        console.log(this.certificates);
+      },
+      addEducationRow() {
+        // 이전 교육이 입력 되지 않은 경우 경고창 출력
+        if (this.educations[this.educations.length - 1].name === '') {
+          alert('이전 교육을 입력한 후 추가를 눌러 주세요');
+          return;
+        }
+
+        // 교육 추가
+        this.educations.push({
+          startMonth: '',
+          endMonth: '',
+          educationName: '',
+          supervisionName: '',
+        });
+
+        console.log(this.educations);
+      },
+      addAwardsRow() {
+        // 이전 수상이 입력 되지 않은 경우 경고창 출력
+        if (this.awards[this.awards.length - 1].name === '') {
+          alert('이전 수상을 입력한 후 추가를 눌러 주세요');
+          return;
+        }
+
+        // 수상 추가
+        this.awards.push({
+          month: '',
+          name: '',
+          supervisionName: '',
+        });
+
+        console.log(this.awards);
+      },
+      addCareerRow() {
+        // 이전 경력이 입력 되지 않은 경우 경고창 출력
+        if (this.careers[this.careers.length - 1].companyName === '') {
+          alert('이전 경력을 입력한 후 추가를 눌러 주세요');
+          return;
+        }
+
+        // 경력 추가
+        this.careers.push({
+          startMonth: '',
+          endMonth: '',
+          duty: '',
+          companyName: '',
+        });
+
+        console.log(this.careers);
+      },
+      addActivityRow() {
+        // 이전 활동이 입력 되지 않은 경우 경고창 출력
+        if (this.activities[this.activities.length - 1].content === '') {
+          alert('이전 활동을 입력한 후 추가를 눌러 주세요');
+          return;
+        }
+
+        // 활동 추가
+        this.activities.push({
+          startMonth: '',
+          endMonth: '',
+          content: '',
+        });
+
+        console.log(this.activities);
+      },
+      next() {
+
+        // 이메일 직접 입력 여부 판별
+        let email = '';
+        if ($('#emailSelect').val() == 'direct') {
+          email = $('#email').val() + '@' + $('#emailSelectDirect').val();
+        } else {
+          email = $('#email').val() + '@' + $('#emailSelect').val();
+        }
+
+        // 학교 배열 유효 데이터 가공
+        for (let i = 0; i < this.schools.length; i++) {
+          if (this.schools[i].schoolName === '') {
+            this.schools[i].splice(i, 1);
+          }
+        }
+
+        // 자격증 배열 유효 데이터 가공
+        for (let i = 0; i < this.certificates.length; i++) {
+          if (this.certificates[i].name === '') {
+            this.certificates[i].splice(i, 1);
+          }
+        }
+
+        // 교육 배열 유효 데이터 가공
+        for (let i = 0; i < this.educations.length; i++) {
+          if (this.educations[i].name === '') {
+            this.educations[i].splice(i, 1);
+          }
+        }
+
+        // 수상 배열 유효 데이터 가공
+        for (let i = 0; i < this.awards.length; i++) {
+          if (this.awards[i].name === '') {
+            this.awards[i].splice(i, 1);
+          }
+        }
+
+        // 경력 배열 유효 데이터 가공
+        for (let i = 0; i < this.careers.length; i++) {
+          if (this.careers[i].companyName === '') {
+            this.careers[i].splice(i, 1);
+          }
+        }
+
+        // 활동 배열 유효 데이터 가공
+        for (let i = 0; i < this.activities.length; i++) {
+          if (this.activities[i].content === '') {
+            this.activities[i].splice(i, 1);
+          }
+        }
+
+        // 데이터 저장
+        this.storyData.push(
+            {
+              imageUrl : this.imgUrl,
+              imgBlob : this.imgBlob,
+              desireJob : $('#desireJob').val(),
+              name : $('#name').val(),
+              birthday : $('#birthday').val(),
+              email : email,
+              phone : $('#phone1').val() + '-' + $('#phone2').val() + '-' + $('#phone3').val(),
+              address : $('#address').val(),
+              militaryService : $('#militaryService').val(),
+              introduction : $('#introduction').val(),
+              school : this.schools,
+              certificate : this.certificates,
+              education : this.educations,
+              awarded : this.awards,
+              career : this.careers,
+              activity : this.activities,
+              languages : $('#languages').val(),
+              frameworkLibrary : $('#frameworkLibrary').val(),
+              server : $('#server').val(),
+              toolDevops : $('#toolDevops').val(),
+              environment : $('#environment').val(),
+              etc : $('#etc').val(),
+            }
+        );
+        store.commit('setStoryPageData', this.storyData); // 데이터 저장
+        this.$router.push('/growth'); // 성장 과정 페이지로 이동
+      }
     }
   }
-}
 </script>
 
 <template>

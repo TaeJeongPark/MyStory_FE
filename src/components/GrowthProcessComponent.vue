@@ -1,5 +1,8 @@
 <script>
+  import $ from 'jquery';
+  import axios from 'axios';
   import HeaderComponent from '@/components/NaviBarComponent.vue';
+  // import store from "@/vuex/store";
 
   export default {
     name: 'GrowthProcessComponent',
@@ -17,7 +20,63 @@
         this.characterCountSpace = event.target.value.length;
         const textWithoutSpaces = event.target.value.replace(/\s/g, '');
         this.characterCount = textWithoutSpaces.length;
-      }
+      },
+      kakaoAlert() {
+        alert('현재 카카오에서 서비스 개선을 위해 일시적으로 API를 제공하지 않고 있습니다. 이용에 불편을 드려 죄송합니다.');
+      },
+      getKakaoCloudToken() {
+        const data = {
+          "auth": {
+            "identity": {
+              "methods": [
+                "application_credential"
+              ],
+              "application_credential": {
+                "id": "2efcd808d49745a49ca8c977819fb700",
+                "secret": "JxbYWTKH39C1gNfH9w_6f-cAWJRUm7-wyce3pbMWXiFoHj2KF6VdNeLe-smfRm9uUNaTbikxpvlOl1B2TPtEsA"
+              }
+            }
+          }
+        };
+
+        // Axios를 사용하여 데이터를 받아오는 비동기 요청
+        this.$axios.post('https://iam.kakaoi.io/identity/v3/auth/tokens', data)
+            // eslint-disable-next-line no-unused-vars
+            .then(response => {
+              // 데이터를 성공적으로 받아왔을 때 다른 화면으로 이동
+              this.$router.push('/homeComponent');
+            })
+            .catch(error => {
+              console.error('Error fetching data:', error);
+            });
+      },
+      checkSpelling() {
+        // 카카오 맞춤법 검사 API 호출
+        const apiUrl = 'https://kapi.kakao.com/v1/language/translate';
+        const apiKey = 'JxbYWTKH39C1gNfH9w_6f-cAWJRUm7-wyce3pbMWXiFoHj2KF6VdNeLe-smfRm9uUNaTbikxpvlOl1B2TPtEsA';
+
+        axios({
+          method: 'post',
+          url: apiUrl,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `KakaoAK ${apiKey}`,
+          },
+          data: `query=${encodeURIComponent($('#content').val())}`,
+        })
+            .then(response => {
+              // API 응답에서 맞춤법 검사 결과 추출
+              const checkedText = response.data.translated_text;
+              console.log(checkedText);
+
+              // 맞춤법 검사 결과를 화면에 표시
+              $('#result').val(checkedText);
+              $('#result').display = 'inlineBlock';
+            })
+            .catch(error => {
+              console.error('맞춤법 검사 도중 오류가 발생했습니다.', error);
+            });
+      },
     }
   }
 </script>
@@ -35,7 +94,7 @@
         <span>공백 포함 {{ characterCountSpace }}자 / 공백 미포함 {{ characterCount }}자</span>
       </div>
       <div>
-        <textarea class="input-box" type="text" placeholder="당신의 성장 과정을 적어 주세요" @keyup="cntCharacters"></textarea>
+        <textarea class="input-box" type="text" placeholder="당신의 성장 과정을 적어 주세요" @keyup="cntCharacters" id="content"></textarea>
       </div>
       <div style="margin: 10px 0px">
         <table style="width: 100%">
@@ -44,7 +103,7 @@
               <button class="btn-small" type="button" style="">이전</button>
             </td>
             <td style="width: 30%;" align="center">
-              <button class="btn-long" type="button" style="">맞춤법 검사</button>
+              <button class="btn-long" type="button" style="" @click="kakaoAlert">맞춤법 검사</button>
             </td>
             <td style="width: 30%;" align="center">
               <button class="btn-long" type="button" style="">AI 첨삭</button>
@@ -56,7 +115,7 @@
         </table>
       </div>
       <div>
-        <textarea class="input-box" style="margin-top: 5px; background-color: lightgray; display: none" type="text" readonly></textarea>
+        <textarea class="input-box" style="margin-top: 5px; background-color: lightgray; display: none" type="text" readonly id="result"></textarea>
       </div>
     </div>
   </body>
