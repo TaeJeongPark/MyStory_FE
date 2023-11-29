@@ -8,10 +8,11 @@ export default {
   data : function(){
     return {
       storyData: [],
-      imageUrl: null,
+      imgUrl: null,
+      imgBlob: null,
       schools: [{startMonth: '', endMonth: '', schoolName: '', departmentName: '', graduateStatus: '졸업예정', gpa: '', gpaMax: '',}],
       certificates: [{month: '', name: ''}],
-      educations: [{startMonth: '', endMonth: '', educationName: '', supervisionName: ''}],
+      educations: [{startMonth: '', endMonth: '', name: '', supervisionName: ''}],
       awards: [{month: '', name: '', supervisionName: ''}],
       careers: [{startMonth: '', endMonth: '', duty: '', companyName: ''}],
       activities: [{startMonth: '', endMonth: '', content: ''}],
@@ -40,11 +41,15 @@ export default {
         // 파일 읽기가 완료되면 호출되는 콜백 함수
         reader.onload = () => {
           // 읽어온 이미지 데이터를 imageUrl에 할당하여 이미지 표시
-          this.imageUrl = reader.result;
+          this.imgUrl = reader.result;
         };
 
         // 파일을 읽어오기
         reader.readAsDataURL(file);
+
+        // 이미지를 Blob으로 변환
+        const imgBlob = new Blob([file], {type: file.type});
+        this.imgBlob = imgBlob;
       }
     },
     addSchoolRow() {
@@ -84,7 +89,7 @@ export default {
     },
     addEducationRow() {
       // 이전 교육이 입력 되지 않은 경우 경고창 출력
-      if (this.educations[this.educations.length - 1].educationName === '') {
+      if (this.educations[this.educations.length - 1].name === '') {
         alert('이전 교육을 입력한 후 추가를 눌러 주세요');
         return;
       }
@@ -174,7 +179,7 @@ export default {
 
       // 교육 배열 유효 데이터 가공
       for (let i = 0; i < this.educations.length; i++) {
-        if (this.educations[i].educationName === '') {
+        if (this.educations[i].name === '') {
           this.educations[i].splice(i, 1);
         }
       }
@@ -203,14 +208,15 @@ export default {
       // 데이터 저장
       this.storyData.push(
           {
-            imageUrl : this.imageUrl,
-            desireJob : $('#desire-job').val(),
+            imageUrl : this.imgUrl,
+            imgBlob : this.imgBlob,
+            desireJob : $('#desireJob').val(),
             name : $('#name').val(),
             birthday : $('#birthday').val(),
             email : email,
             phone : $('#phone1').val() + '-' + $('#phone2').val() + '-' + $('#phone3').val(),
             address : $('#address').val(),
-            militaryService : $('#military-service').val(),
+            militaryService : $('#militaryService').val(),
             introduction : $('#introduction').val(),
             school : this.schools,
             certificate : this.certificates,
@@ -219,9 +225,9 @@ export default {
             career : this.careers,
             activity : this.activities,
             languages : $('#languages').val(),
-            frameworkLibrary : $('#framework-library').val(),
+            frameworkLibrary : $('#frameworkLibrary').val(),
             server : $('#server').val(),
-            toolDevops : $('#tool-devops').val(),
+            toolDevops : $('#toolDevops').val(),
             environment : $('#environment').val(),
             etc : $('#etc').val(),
           }
@@ -245,7 +251,7 @@ export default {
     <form>
       <div class="block">
         <div class="title-small">사진</div>
-        <img class="img" v-if="imageUrl" :src="imageUrl" alt="사진" id="img">
+        <img class="img" v-if="imgUrl" :src="imgUrl" alt="사진" id="img">
         <img v-else src="../../public/story/img_image.svg" alt="사진" id="default-img">
         <label for="file">
           <div class="btn-small" style="margin-left: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center;">업로드</div>
@@ -341,55 +347,49 @@ export default {
       <div class="block">
         <div class="title-small">교육</div>
         <table id="educationTable">
-          <tr>
-            <input class="input-box" type="month" style="width: 126px;" v-model="education">
+          <tr v-for="(education, index) in educations" :key="index">
+            <input class="input-box" type="month" style="width: 126px;" v-model="education.startMonth">
             <span>~</span>
-            <input class="input-box" type="month" style="width: 126px;">
-            <input class="input-box" type="text" style="width: 180px;" placeholder="교육명을 입력해 주세요" id="education-name1">
-            <input class="input-box" type="text" style="width: 180px;" placeholder="기관명을 입력해 주세요" id="education-supervision_name1">
+            <input class="input-box" type="month" style="width: 126px;" v-model="education.endMonth">
+            <input class="input-box" type="text" style="width: 180px;" placeholder="교육명을 입력해 주세요" v-model="education.name">
+            <input class="input-box" type="text" style="width: 180px;" placeholder="기관명을 입력해 주세요" v-model="education.supervisionName">
           </tr>
         </table>
         <button class="btn-small center" type="button" style="margin-top: 10px" @click="addEducationRow()">추가</button>
       </div>
       <div class="block">
         <div class="title-small">수상</div>
-        <table>
-          <tbody id="awarded-table">
-          <tr>
-            <input class="input-box" type="month" style="width: 126px;" id="awarded-month1">
-            <input class="input-box" type="text" style="width: 180px;" placeholder="수상명을 입력해 주세요" id="awarded-name1">
-            <input class="input-box" type="text" style="width: 180px;" placeholder="기관명을 입력해 주세요" id="awarded-supervision_name1">
+        <table id="awardTable">
+          <tr v-for="(award, index) in awards" :key="index">
+            <input class="input-box" type="month" style="width: 126px;" v-model="award.month">
+            <input class="input-box" type="text" style="width: 180px;" placeholder="수상명을 입력해 주세요" v-model="award.name">
+            <input class="input-box" type="text" style="width: 180px;" placeholder="기관명을 입력해 주세요" v-model="award.supervisionName">
           </tr>
-          </tbody>
         </table>
         <button class="btn-small center" type="button" style="margin-top: 10px" @click="addAwardsRow()">추가</button>
       </div>
       <div class="block">
         <div class="title-small">경력</div>
-        <table>
-          <tbody id="career-table">
-          <tr>
-            <input class="input-box" type="month" style="width: 126px;" id="career-start-month1">
+        <table id="careerTable">
+          <tr v-for="(career, index) in careers" :key="index">
+            <input class="input-box" type="month" style="width: 126px;" v-model="career.startMonth">
             <span>~</span>
-            <input class="input-box" type="month" style="width: 126px;" id="career-end-month1">
-            <input class="input-box" type="text" style="width: 180px;" placeholder="직무를 입력해 주세요" id="career-duty1">
-            <input class="input-box" type="text" style="width: 180px;" placeholder="회사명을 입력해 주세요" id="career-company-name1">
+            <input class="input-box" type="month" style="width: 126px;" v-model="career.endMonth">
+            <input class="input-box" type="text" style="width: 180px;" placeholder="직무를 입력해 주세요" v-model="career.duty">
+            <input class="input-box" type="text" style="width: 180px;" placeholder="회사명을 입력해 주세요" v-model="career.companyName">
           </tr>
-          </tbody>
         </table>
         <button class="btn-small center" type="button" style="margin-top: 10px" @click="addCareerRow()">추가</button>
       </div>
       <div class="block">
         <div class="title-small">활동경험</div>
-        <table>
-          <tbody id="activity-table">
-          <tr>
-            <input class="input-box" type="month" style="width: 126px;" id="activity-start-month1">
+        <table id="activityTable">
+          <tr v-for="(activity, index) in activities" :key="index">
+            <input class="input-box" type="month" style="width: 126px;" v-model="activity.startMonth">
             <span>~</span>
-            <input class="input-box" type="month" style="width: 126px;" id="activity-end-month1">
-            <input class="input-box" type="text" style="width: 400px;" placeholder="활동 내용을 입력해 주세요" id="activity-content">
+            <input class="input-box" type="month" style="width: 126px;" v-model="activity.endMonth">
+            <input class="input-box" type="text" style="width: 400px;" placeholder="활동 내용을 입력해 주세요" v-model="activity.content">
           </tr>
-          </tbody>
         </table>
         <button class="btn-small center" type="button" style="margin-top: 10px" @click="addActivityRow()">추가</button>
       </div>
