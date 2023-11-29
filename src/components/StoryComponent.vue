@@ -230,7 +230,7 @@ export default {
       </div>
       <div class="block">
         <div class="title-small">나의 한 줄 소개</div>
-        <textarea class="input-box" type="text" style="width: 1000px; height: 90px; padding: 10px; text-align: start;" placeholder="한 줄 소개를 입력해 주세요" id="introduction"></textarea>
+        <textarea class="input-box" type="text" style="width: 100%; height: 90px; padding: 10px; text-align: start;" placeholder="한 줄 소개를 입력해 주세요" id="introduction"></textarea>
       </div>
       <div class="block">
         <div class="title-small">학력</div>
