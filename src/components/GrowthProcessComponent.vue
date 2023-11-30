@@ -21,6 +21,25 @@
         const textWithoutSpaces = event.target.value.replace(/\s/g, '');
         this.characterCount = textWithoutSpaces.length;
       },
+      chatGptSend() {
+        console.log($('#content').val());
+
+        const data = {
+          sentence : $('#content').val(),
+        }
+        // Axios를 사용하여 데이터를 받아오는 비동기 요청
+        this.$axios.post('content/correctSentence', data)
+            // eslint-disable-next-line no-unused-vars
+            .then(response => {
+              // AI 첨삭 결과를 화면에 표시
+              console.log(response.data);
+              $('#result').val(response.data.result);
+              $('#result').css('display', 'inline-block');
+            })
+            .catch(error => {
+              console.error('Error fetching data:', error);
+            });
+      },
       kakaoAlert() {
         alert('현재 카카오에서 서비스 개선을 위해 일시적으로 API를 제공하지 않고 있습니다. 이용에 불편을 드려 죄송합니다.');
       },
@@ -103,10 +122,10 @@
               <button class="btn-small" type="button" style="">이전</button>
             </td>
             <td style="width: 30%;" align="center">
-              <button class="btn-long" type="button" style="" @click="kakaoAlert">맞춤법 검사</button>
+              <button class="btn-long" type="button" @click="kakaoAlert">맞춤법 검사</button>
             </td>
             <td style="width: 30%;" align="center">
-              <button class="btn-long" type="button" style="">AI 첨삭</button>
+              <button class="btn-long" type="button" @click="chatGptSend">AI 첨삭</button>
             </td>
             <td style="width: 20%;" align="right">
               <button class="btn-small" type="button" style="">다음</button>
@@ -115,7 +134,7 @@
         </table>
       </div>
       <div>
-        <textarea class="input-box" style="margin-top: 5px; background-color: lightgray; display: none" type="text" readonly id="result"></textarea>
+        <textarea class="input-box" style="margin-top: 5px; margin-bottom: 100px; background-color: lightgray; display: none;" type="text" readonly id="result"></textarea>
       </div>
     </div>
   </body>
