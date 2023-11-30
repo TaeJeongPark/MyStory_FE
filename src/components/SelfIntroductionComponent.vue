@@ -2,7 +2,7 @@
   import $ from 'jquery';
   import axios from 'axios';
   import HeaderComponent from '@/components/NaviBarComponent.vue';
-  // import store from "@/vuex/store";
+  import store from "@/vuex/store";
 
   export default {
     name: 'GrowthProcessComponent',
@@ -10,6 +10,8 @@
       return {
         characterCountSpace: 0,
         characterCount: 0,
+        pageCnt: 1,
+        savePath: 'setGrowthData',
       };
     },
     components: {
@@ -90,11 +92,43 @@
 
               // 맞춤법 검사 결과를 화면에 표시
               $('#result').val(checkedText);
-              $('#result').display = 'inlineBlock';
+              $('#result').css('display', 'inline-block');
             })
             .catch(error => {
               console.error('맞춤법 검사 도중 오류가 발생했습니다.', error);
             });
+      },
+      next() {
+        // store에 저장
+        store.commit(this.savePath, $('#content').val());
+
+        // 다음 항목으로 변경
+        this.pageCnt++;
+
+        // 페이지 제어
+        if (this.pageCnt === 1) {
+          this.savePath = 'setGrowthData';
+        } else if (this.pageCnt === 2) {
+          this.savePath = 'setReasonData';
+        } else if (this.pageCnt === 3) {
+          this.savePath = 'setMeritFaultData';
+        } else if (this.pageCnt === 4) {
+          this.savePath = 'setAspirationData';
+        } else if (this.pageCnt === 5) {
+          this.$router.push('/result'); // 결과 페이지로 이동
+        } else if (this.pageCnt === 0) {
+          this.$router.push('/story');  // 이력서 페이지로 이동
+        }
+
+        this.characterCountSpace = 0;
+        this.characterCount = 0;
+      },
+      back() {
+        // 이전 항목으로 변경
+        this.pageCnt--;
+
+        this.characterCountSpace = 0;
+        this.characterCount = 0;
       },
     }
   }
@@ -107,19 +141,25 @@
     </div>
     <div class="center">
       <div>
-        <h1 class="title">당신의 성장 과정은 어땠나요?</h1>
+        <h1 v-if="this.pageCnt === 1" class="title" id="title">당신의 성장 과정은 어땠나요?</h1>
+        <h1 v-if="this.pageCnt === 2" class="title" id="title">당신의 지원 동기는 무엇인가요?</h1>
+        <h1 v-if="this.pageCnt === 3" class="title" id="title">당신 성격의 장단점은 무엇인가요?</h1>
+        <h1 v-if="this.pageCnt === 4" class="title" id="title">당신의 입사 후 포부는 무엇인가요?</h1>
       </div>
       <div style="float: right;">
         <span>공백 포함 {{ characterCountSpace }}자 / 공백 미포함 {{ characterCount }}자</span>
       </div>
       <div>
-        <textarea class="input-box" type="text" placeholder="당신의 성장 과정을 적어 주세요" @keyup="cntCharacters" id="content"></textarea>
+        <textarea v-if="this.pageCnt === 1" class="input-box" type="text" placeholder="당신의 성장 과정을 적어 주세요" @keyup="cntCharacters" id="content"></textarea>
+        <textarea v-if="this.pageCnt === 2" class="input-box" type="text" placeholder="당신의 지원 동기를 적어 주세요" @keyup="cntCharacters" id="content"></textarea>
+        <textarea v-if="this.pageCnt === 3" class="input-box" type="text" placeholder="당신 성격의 장단점을 적어 주세요" @keyup="cntCharacters" id="content"></textarea>
+        <textarea v-if="this.pageCnt === 4" class="input-box" type="text" placeholder="당신의 입사 후 포부를 적어 주세요" @keyup="cntCharacters" id="content"></textarea>
       </div>
       <div style="margin: 10px 0px">
         <table style="width: 100%">
           <tr>
             <td style="width: 20%;">
-              <button class="btn-small" type="button" style="">이전</button>
+              <button class="btn-small" type="button" @click="back">이전</button>
             </td>
             <td style="width: 30%;" align="center">
               <button class="btn-long" type="button" @click="kakaoAlert">맞춤법 검사</button>
@@ -128,7 +168,7 @@
               <button class="btn-long" type="button" @click="chatGptSend">AI 첨삭</button>
             </td>
             <td style="width: 20%;" align="right">
-              <button class="btn-small" type="button" style="">다음</button>
+              <button class="btn-small" type="button" @click="next">다음</button>
             </td>
           </tr>
         </table>

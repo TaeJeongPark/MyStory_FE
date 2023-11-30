@@ -2,7 +2,7 @@ import { createWebHistory, createRouter } from 'vue-router'
 import Home from '@/components/HomeComponent.vue'
 import Login from "@/components/LoginComponent.vue";
 import Story from "@/components/StoryComponent.vue";
-import Growth from "@/components/GrowthProcessComponent.vue";
+import Introduction from "@/components/SelfIntroductionComponent.vue";
 import Result from "@/components/ResultComponent.vue";
 
 const routes = [
@@ -22,9 +22,9 @@ const routes = [
         component: Story
     },
     {
-        path: '/growth',
-        name: 'growth',
-        component: Growth
+        path: '/introduction',
+        name: 'introduction',
+        component: Introduction
     },
     {
         path: '/result',

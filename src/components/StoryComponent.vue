@@ -163,47 +163,48 @@
           email = $('#email').val() + '@' + $('#emailSelect').val();
         }
 
-        // 학교 배열 유효 데이터 가공
-        for (let i = 0; i < this.schools.length; i++) {
-          if (this.schools[i].schoolName === '') {
-            this.schools[i].splice(i, 1);
-          }
-        }
-
-        // 자격증 배열 유효 데이터 가공
-        for (let i = 0; i < this.certificates.length; i++) {
-          if (this.certificates[i].name === '') {
-            this.certificates[i].splice(i, 1);
-          }
-        }
-
-        // 교육 배열 유효 데이터 가공
-        for (let i = 0; i < this.educations.length; i++) {
-          if (this.educations[i].name === '') {
-            this.educations[i].splice(i, 1);
-          }
-        }
-
-        // 수상 배열 유효 데이터 가공
-        for (let i = 0; i < this.awards.length; i++) {
-          if (this.awards[i].name === '') {
-            this.awards[i].splice(i, 1);
-          }
-        }
-
-        // 경력 배열 유효 데이터 가공
-        for (let i = 0; i < this.careers.length; i++) {
-          if (this.careers[i].companyName === '') {
-            this.careers[i].splice(i, 1);
-          }
-        }
-
-        // 활동 배열 유효 데이터 가공
-        for (let i = 0; i < this.activities.length; i++) {
-          if (this.activities[i].content === '') {
-            this.activities[i].splice(i, 1);
-          }
-        }
+        // // 학교 배열 유효 데이터 가공
+        // for (let i = 0; i < this.schools.length; i++) {
+        //   if (this.schools[i].schoolName === '') {
+        //     this.schools[i].splice(i, 1);
+        //     i--;
+        //   }
+        // }
+        //
+        // // 자격증 배열 유효 데이터 가공
+        // for (let i = 0; i < this.certificates.length; i++) {
+        //   if (this.certificates[i].name === '') {
+        //     this.certificates[i].splice(i, 1);
+        //   }
+        // }
+        //
+        // // 교육 배열 유효 데이터 가공
+        // for (let i = 0; i < this.educations.length; i++) {
+        //   if (this.educations[i].name === '') {
+        //     this.educations[i].splice(i, 1);
+        //   }
+        // }
+        //
+        // // 수상 배열 유효 데이터 가공
+        // for (let i = 0; i < this.awards.length; i++) {
+        //   if (this.awards[i].name === '') {
+        //     this.awards[i].splice(i, 1);
+        //   }
+        // }
+        //
+        // // 경력 배열 유효 데이터 가공
+        // for (let i = 0; i < this.careers.length; i++) {
+        //   if (this.careers[i].companyName === '') {
+        //     this.careers[i].splice(i, 1);
+        //   }
+        // }
+        //
+        // // 활동 배열 유효 데이터 가공
+        // for (let i = 0; i < this.activities.length; i++) {
+        //   if (this.activities[i].content === '') {
+        //     this.activities[i].splice(i, 1);
+        //   }
+        // }
 
         // 데이터 저장
         this.storyData.push(
@@ -232,8 +233,12 @@
               etc : $('#etc').val(),
             }
         );
-        store.commit('setStoryPageData', this.storyData); // 데이터 저장
-        this.$router.push('/growth'); // 성장 과정 페이지로 이동
+
+        // store에 저장
+        store.commit('setRecordData', this.storyData);
+
+        // 성장 과정 페이지로 이동
+        this.$router.push('/introduction');
       }
     }
   }
