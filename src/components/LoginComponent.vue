@@ -25,10 +25,10 @@
     <form>
       <h1 class="title center typing text">당신의 이야기를 들려주세요</h1>
       <button class="btn center" type="button" style="width: auto; height: auto">
-        <img src="../../public/login/btn_kakao_login.svg" alt="카카오 로그인" onclick="loginKakao()">
+        <img src="../../public/login/btn_kakao_login.svg" alt="카카오 로그인" @click="loginKakao">
       </button>
       <button class="btn center" type="button" style="width: auto; height: auto">
-        <img src="../../public/login/btn_non_member.svg" alt="비회원" onclick="">
+        <img src="../../public/login/btn_non_member.svg" alt="비회원" @click="this.$router.push('/story')">
       </button>
     </form>
   </main>

@@ -4,7 +4,7 @@ import { createStore } from 'vuex';
 
 export default createStore({
     state: {
-        userData : null,
+        userId : null,
         growthData : null,
         reasonData : null,
         meritFaultData : null,
@@ -33,8 +33,8 @@ export default createStore({
         etc : null,
     },
     mutations: {
-        setUserData(state, data) {
-            state.userData = data;          // 사용자 정보
+        setUserId(state, data) {
+            state.userId = data;          // 사용자 정보
         },
         setGrowthData(state, data) {
             state.growthData = data;        // 성장 과정 정보
@@ -116,8 +116,8 @@ export default createStore({
         },
     },
     getters: {
-        getUserData(state) {
-            return state.userData;
+        getUserId(state) {
+            return state.userId;
         },
         getGrowthData(state) {
             return state.growthData;

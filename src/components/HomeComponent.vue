@@ -5,7 +5,6 @@
     name: 'HomeComponent',
     data : function(){
       return {
-        classList : [],
       };
     },
     components: {
