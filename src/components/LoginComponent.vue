@@ -1,18 +1,52 @@
 <script>
+  import axios from "axios";
+  import store from "@/vuex/store";
+
   export default {
     name: 'App',
+    data : function(){
+      return {
+        kakaoKey: "cce23cbb01041c3fab7a8525efd6af0e",
+      };
+    },
     methods: {
-      loginKakao() {
-        // Axios를 사용하여 데이터를 받아오는 비동기 요청
-        this.$axios.get('https://api.example.com/data')
-            // eslint-disable-next-line no-unused-vars
-            .then(response => {
-              // 데이터를 성공적으로 받아왔을 때 다른 화면으로 이동
-              this.$router.push('/homeComponent');
+      kakaoLogin() {
+        // console.log(window.Kakao);
+        window.Kakao.Auth.login({
+          success: this.GetMe,
+        });
+      },
+      GetMe(){
+        window.Kakao.API.request({
+          url:'/v2/user/me',
+          success : res => {
+            const id = res.id;
+
+            axios.post(`login/kakao`,{
+              userId : id,
+              accessToken : window.Kakao.Auth.getAccessToken(),
             })
-            .catch(error => {
-              console.error('Error fetching data:', error);
-            });
+                .then(res => {
+                  console.log(res);
+                  if(res.data.msg === "Success") {
+                    console.log("로그인 성공");
+                  } else {
+                    console.log("로그인 실패");
+                  }
+                })
+                .catch(err => {
+                  console.log(err);
+                  console.log("로그인 실패");
+                })
+            console.log(id);
+            store.commit('setUserId', id);
+            this.$router.push('/home');
+          },
+          fail : error => {
+            // this.$router.push("/errorPage");
+            console.log(error);
+          }
+        })
       }
     }
   }
@@ -24,12 +58,15 @@
   <main class="form-signin w-100 m-auto">
     <form>
       <h1 class="title center typing text">당신의 이야기를 들려주세요</h1>
-      <button class="btn center" type="button" style="width: auto; height: auto">
-        <img src="../../public/login/btn_kakao_login.svg" alt="카카오 로그인" @click="loginKakao">
+<!--      <kakao-login :js-key="this.kakaoKey" :get-profile-info="true" :use-login-out="true" @success="onSuccess" @fail="onFail">-->
+<!--        <button>Login with Kakao</button>-->
+      <button class="btn center" type="button" style="width: auto; height: auto" @click="kakaoLogin">
+        <img src="../../public/login/btn_kakao_login.svg" alt="카카오 로그인">
       </button>
+<!--      </kakao-login>-->
       <button class="btn center" type="button" style="width: auto; height: auto">
         <img src="../../public/login/btn_non_member.svg" alt="비회원" @click="this.$router.push('/story')">
-      </button>
+      </button>ㅌ
     </form>
   </main>
   </body>
