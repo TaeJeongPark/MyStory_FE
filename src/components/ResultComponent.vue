@@ -4,9 +4,10 @@
   import jsPDF from 'jspdf';
   import _ from 'lodash';
   import $ from "jquery";
+  import store from "@/vuex/store";
 
   const getNowDate = () => {
-    /* 파일 이름 설정 : (default) 현재 시간 기준 */
+    // 파일 이름 설정 : (default) 현재 시간 기준
     const now = new Date();
     return `${now.getFullYear()}${now.getMonth() + 1}${now.getDate()}${now.getHours()}${now.getMinutes()}`;
 
@@ -59,12 +60,32 @@
 
   export default {
     name: 'StoryComponent',
+    computed: {
+      store() {
+        return store
+      }
+    },
     data: function () {
       return {
         classList: [],
         tableRows: [], // 테이블의 행을 저장할 배열
         nextId: 1, // 다음 행에 할당될 ID
         propTitle: 'mypdf',
+        imgUrl: null,
+        desireJob: store.getters.getDesireJob,
+        name: store.getters.getName,
+        birthday: store.getters.getBirthday,
+        email: store.getters.getEmail,
+        phone: store.getters.getPhone,
+        address: store.getters.getAddress,
+        military: store.getters.getMilitary,
+        introduce: store.getters.getIntroduction,
+        schools: store.getters.getSchool,
+        certificates: store.getters.getCertificate,
+        educations: store.getters.getEducation,
+        awards: store.getters.getAward,
+        careers: store.getters.getCareer,
+        activities: store.getters.getActivity,
       };
     },
     components: {
@@ -187,6 +208,48 @@
         $('#header').css('display', 'inline-block');
         $('#btn-save').css('display', 'inline-block');
       },
+    },
+    mounted() {
+      // 이미지 변환
+      if(store.state.imgBlob) {
+        this.imgUrl = URL.createObjectURL(store.state.imgBlob);
+      }
+
+      // 학력 배열 유효성 검사
+      let check = store.getters.getSchool[0].schoolName;
+      if(check == null || check == undefined || check == '') {
+        store.state.school = false;
+      }
+
+      // 자격증 배열 유효성 검사
+      check = store.getters.getCertificate[0].name;
+      if(check == null || check == undefined || check == '') {
+        store.state.certificate = false;
+      }
+
+      // 교육 배열 유효성 검사
+      check = store.getters.getEducation[0].supervisionName;
+      if(check == null || check == undefined || check == '') {
+        store.state.education = false;
+      }
+
+      // 수상 배열 유효성 검사
+      check = store.getters.getAward[0].supervisionName;
+      if(check == null || check == undefined || check == '') {
+        store.state.award = false;
+      }
+
+      // 경력 배열 유효성 검사
+      check = store.getters.getCareer[0].companyName;
+      if(check == null || check == undefined || check == '') {
+        store.state.career = false;
+      }
+
+      // 활동 경험 배열 유효성 검사
+      check = store.getters.getActivity[0].content;
+      if(check == null || check == undefined || check == '') {
+        store.state.activity = false;
+      }
     }
   }
 </script>
@@ -198,190 +261,200 @@
     </div>
     <div style="width: 100%; "></div>
     <div class="block center" style="margin-top: 100px;" id="export-container">
-      <div style="">
-        <img src="../../public/story/img_image.svg" alt="사진" style="display: inline-block">
-        <table class="default-info-table">
+      <img v-if="store.state.imgBlob" class="img" :src="imgUrl" alt="사진" id="img">
+      <table class="default-info-table">
+        <tr v-if="store.state.birthday">
+          <td style="width: 100px">생년월일</td>
+          <td style="width: 300px">{{ birthday }}</td>
+        </tr>
+        <tr v-if="store.state.email">
+          <td>Email</td>
+          <td>{{ email }}</td>
+        </tr>
+        <tr v-if="store.state.phone">
+          <td>Mobile</td>
+          <td>{{ phone }}</td>
+        </tr>
+        <tr v-if="store.state.address">
+          <td>Address</td>
+          <td>{{ address }}</td>
+        </tr>
+        <tr v-if="store.state.military">
+          <td>병역사항</td>
+          <td>{{ military }}</td>
+        </tr>
+      </table>
+      <div v-if="store.state.name || store.state.desireJob" class="block" style="margin-top: 10px">
+        <span style="font-size: 20px;">{{ name }}</span><br>
+        <span>{{ desireJob }}</span>
+      </div>
+      <div v-if="store.state.introduction" class="block">
+        <table class="default-table" style="width: 100%">
           <tr>
-            <td style="width: 100px">생년월일</td>
-            <td style="width: 300px">1999.11.28</td>
+            <td class="title-small">나의 한 줄 소개</td>
           </tr>
           <tr>
-            <td>Email</td>
-            <td>inhatc@gmail.com</td>
-          </tr>
-          <tr>
-            <td>Mobile</td>
-            <td>010-1234-5678</td>
-          </tr>
-          <tr>
-            <td>Address</td>
-            <td>인천광역시 미추홀구 인하로 100</td>
-          </tr>
-          <tr>
-            <td>병역사항</td>
-            <td>만기전역</td>
+            <td>{{ introduce }}</td>
           </tr>
         </table>
-        <div class="block" style="margin-top: 10px">
-          <span style="font-size: 20px;">박태정</span><br>
-          <span>Backend Developer</span>
-        </div>
-        <div class="block">
-          <table class="default-table" style="width: 100%">
-            <tr>
-              <td class="title-small">나의 한 줄 소개</td>
-            </tr>
-            <tr>
-              <td>이곳은 사용자의 한 줄 소개를 입력하는 공간입니다.</td>
-            </tr>
-          </table>
-        </div>
-        <div class="block">
-          <table class="default-table" style="width: 100%">
-            <tr>
-              <td class="title-small" colspan="10">학력</td>
-            </tr>
-            <tr>
-              <td style="width: 2%; text-align: left;">-</td>
-              <td style="width: 10%; text-align: right;">2018.03</td>
-              <td style="width: 2%; text-align: center;">~</td>
-              <td style="width: 10%; text-align: left;">2024.02</td>
-              <td style="width: 28%; text-align: left;">인하공업전문대학</td>
-              <td style="width: 28%; text-align: left;">컴퓨터시스템과</td>
-              <td style="width: 12%; text-align: center;">졸업예정</td>
-              <td style="width: 3%; text-align: right;">4.33</td>
-              <td style="width: 2%; text-align: center;">/</td>
-              <td style="width: 3%; text-align: left;">4.5</td>
-            </tr>
-          </table>
-        </div>
-        <div class="block">
-          <table class="default-table" style="width: 100%">
-            <tr>
-              <td class="title-small" colspan="3">자격증</td>
-            </tr>
-            <tr>
-              <td style="width: 2%; text-align: left;">-</td>
-              <td style="width: 10%; text-align: right;">2018.03</td>
-              <td style="width: 88%; text-align: left; padding-left: 20px">ISTQB</td>
-            </tr>
-          </table>
-        </div>
-        <div class="block">
-          <table class="default-table" style="width: 100%">
-            <tr>
-              <td class="title-small" colspan="10">교육</td>
-            </tr>
-            <tr>
-              <td style="width: 2%; text-align: left;">-</td>
-              <td style="width: 10%; text-align: right;">2018.03</td>
-              <td style="width: 2%; text-align: center;">~</td>
-              <td style="width: 10%; text-align: left;">2024.02</td>
-              <td style="width: 28%; text-align: left;">3-In 인증</td>
-              <td style="width: 48%; text-align: left;">인하공업전문대학</td>
-            </tr>
-          </table>
-        </div>
-        <div class="block">
-          <table class="default-table" style="width: 100%">
-            <tr>
-              <td class="title-small" colspan="10">수상</td>
-            </tr>
-            <tr>
-              <td style="width: 2%; text-align: left;">-</td>
-              <td style="width: 10%; text-align: right;">2018.03</td>
-              <td style="width: 28%; text-align: left; padding-left: 20px">글짓기 세무서장상</td>
-              <td style="width: 60%; text-align: left;">중부세무서장상</td>
-            </tr>
-          </table>
-        </div>
-        <div class="block">
-          <table class="default-table" style="width: 100%">
-            <tr>
-              <td class="title-small" colspan="10">경력</td>
-            </tr>
-            <tr>
-              <td style="width: 2%; text-align: left;">-</td>
-              <td style="width: 10%; text-align: right;">2018.03</td>
-              <td style="width: 2%; text-align: center;">~</td>
-              <td style="width: 10%; text-align: left;">2024.02</td>
-              <td style="width: 28%; text-align: left;">Backend Developer</td>
-              <td style="width: 48%; text-align: left;">(주)토스</td>
-            </tr>
-          </table>
-        </div>
-        <div class="block">
-          <table class="default-table" style="width: 100%">
-            <tr>
-              <td class="title-small" colspan="10">활동경험</td>
-            </tr>
-            <tr>
-              <td style="width: 2%; text-align: left;">-</td>
-              <td style="width: 10%; text-align: right;">2018.03</td>
-              <td style="width: 2%; text-align: center;">~</td>
-              <td style="width: 10%; text-align: left;">2024.02</td>
-              <td style="width: 76%; text-align: left;">인하공업전문대학 창업동아리(PIP)</td>
-            </tr>
-          </table>
-        </div>
-        <div class="block" id="page2el">
-          <table class="default-table" style="width: 100%">
-            <tr>
-              <td class="title-small" colspan="10">기술스택</td>
-            </tr>
-            <tr>
-              <td style="width: 30%; text-align: left;">Programin Languages</td>
-              <td style="width: 70%; text-align: right;"><input class="input-box" style="width: 100%" type="text" value="Java, Python, SQL, Dart, C, C++" readonly></td>
-            </tr>
-            <tr>
-              <td style="width: 30%; text-align: left;">Framework / Library</td>
-              <td style="width: 70%; text-align: right;"><input class="input-box" style="width: 100%" type="text" value="Spring, Spring Boot, .NET, jQuery, Node.js, Flutter" readonly></td>
-            </tr>
-            <tr>
-              <td style="width: 30%; text-align: left;">Server</td>
-              <td style="width: 70%; text-align: right;"><input class="input-box" style="width: 100%" type="text" value="MySQL, Oracle, MariaDB" readonly></td>
-            </tr>
-            <tr>
-              <td style="width: 30%; text-align: left;">Environment</td>
-              <td style="width: 70%; text-align: right;"><textarea class="input-box" type="text" style="width: 100%; height: 90px; padding: 10px; text-align: start;" readonly>Eclipse, Intellij, Spring Tool Suite, Android Studio, Visual Studio, Visual Studio Code, Sublime Text, Notepad++, Postman</textarea></td>
-            </tr>
-            <tr>
-              <td style="width: 30%; text-align: left;">Environment</td>
-              <td style="width: 70%; text-align: right;"><input class="input-box" style="width: 100%" type="text" value="Windows, Linux" readonly></td>
-            </tr>
-            <tr>
-              <td style="width: 30%; text-align: left;">ETC</td>
-              <td style="width: 70%; text-align: right;"><input class="input-box" style="width: 100%" type="text" value="Notion, Figma, Photoshop, Illustrator" readonly></td>
-            </tr>
-          </table>
-        </div>
-        <div class="block">
-          <div class="title-small">성장과정</div>
-          <div>
-            <textarea class="input-box" style="margin-top: 5px; width: 100%; height: 500px" type="text" readonly></textarea>
-          </div>
-        </div>
-        <div class="block">
-          <div class="title-small">지원동기</div>
-          <div>
-            <textarea class="input-box" style="margin-top: 5px; width: 100%; height: 500px" type="text" readonly></textarea>
-          </div>
-        </div>
-        <div class="block">
-          <div class="title-small">성격의 장단점</div>
-          <div>
-            <textarea class="input-box" style="margin-top: 5px; width: 100%; height: 500px" type="text" readonly></textarea>
-          </div>
-        </div>
-        <div class="block">
-          <div class="title-small">입사 후 포부</div>
-          <div>
-            <textarea class="input-box" style="margin-top: 5px; margin-bottom: 50px; width: 100%; height: 500px" type="text" readonly></textarea>
-          </div>
-        </div>
+      </div>
+      <div v-if="store.state.school" class="block">
+        <table class="default-table" style="width: 100%">
+          <tr>
+            <td class="title-small" colspan="10">학력</td>
+          </tr>
+          <tr v-for="(school, index) in schools" :key="index">
+            <td>
+              <span>-</span>
+              <input v-if="school.startMonth" class="input-box" type="text" style="width: 126px; margin-top: 5px; text-align: right;" readonly v-model="school.startMonth">
+              <span v-if="school.endMonth">~</span>
+              <input v-if="school.endMonth" class="input-box" type="text" style="width: 126px; text-align: left;" readonly v-model="school.endMonth">
+              <input v-if="school.schoolName" class="input-box" type="text" style="width: 180px;" readonly v-model="school.schoolName">
+              <input v-if="school.departmentName" class="input-box" type="text" style="width: 180px;" readonly v-model="school.departmentName">
+              <input v-if="school.graduateStatus" class="input-box" style="width: 112px;" id="graduateSelect" readonly v-model="school.graduateStatus">
+              <input v-if="school.gpa" class="input-box" type="text" style="width: 74px; text-align: center;" readonly v-model="school.gpa">
+              <span v-if="school.gpaMax">/</span>
+              <input v-if="school.gpaMax" class="input-box" type="text" style="width: 74px; text-align: center;" readonly v-model="school.gpaMax">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div v-if="store.state.certificate" class="block">
+        <table class="default-table" style="width: 100%">
+          <tr>
+            <td class="title-small" colspan="3">자격증</td>
+          </tr>
+          <tr v-for="(certificate, index) in certificates" :key="index">
+            <td>
+              <span>-</span>
+              <input v-if="certificate.month" class="input-box" type="text" style="width: 126px; margin-top: 5px; text-align: right;" readonly v-model="certificate.month">
+              <input v-if="certificate.name" class="input-box" type="text" style="width: 180px;" readonly v-model="certificate.name">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div v-if="store.state.education" class="block">
+        <table class="default-table" style="width: 100%">
+          <tr>
+            <td class="title-small" colspan="10">교육</td>
+          </tr>
+          <tr v-for="(education, index) in educations" :key="index">
+            <td>
+              <span>-</span>
+              <input v-if="education.startMonth" class="input-box" type="text" style="width: 126px; margin-top: 5px; text-align: right;" readonly v-model="education.startMonth">
+              <span v-if="education.endMonth">~</span>
+              <input v-if="education.endMonth" class="input-box" type="text" style="width: 126px; text-align: left;" readonly v-model="education.endMonth">
+              <input v-if="education.name" class="input-box" type="text" style="width: 180px;" readonly v-model="education.name">
+              <input v-if="education.supervisionName" class="input-box" type="text" style="width: 180px;" readonly v-model="education.supervisionName">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div v-if="store.state.award" class="block">
+        <table class="default-table" style="width: 100%">
+          <tr>
+            <td class="title-small" colspan="10">수상</td>
+          </tr>
+          <tr v-for="(award, index) in awards" :key="index">
+            <td>
+              <span>-</span>
+              <input v-if="award.month" class="input-box" type="text" style="width: 126px; margin-top: 5px; text-align: right;" readonly v-model="award.month">
+              <input v-if="award.name" class="input-box" type="text" style="width: 180px;" readonly v-model="award.name">
+              <input v-if="award.supervisionName" class="input-box" type="text" style="width: 180px;" readonly v-model="award.supervisionName">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div v-if="store.state.career" class="block">
+        <table class="default-table" style="width: 100%">
+          <tr>
+            <td class="title-small" colspan="10">경력</td>
+          </tr>
+          <tr v-for="(career, index) in careers" :key="index">
+            <td>
+              <span>-</span>
+              <input v-if="career.startMonth" class="input-box" type="text" style="width: 126px; margin-top: 5px; text-align: right;" readonly v-model="career.startMonth">
+              <span v-if="career.endMonth">~</span>
+              <input v-if="career.endMonth" class="input-box" type="text" style="width: 126px; text-align: left;" readonly v-model="career.endMonth">
+              <input v-if="career.duty" class="input-box" type="text" style="width: 180px;" readonly v-model="career.duty">
+              <input v-if="career.companyName" class="input-box" type="text" style="width: 180px;" readonly v-model="career.companyName">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div v-if="store.state.activity" class="block">
+        <table class="default-table" style="width: 100%">
+          <tr>
+            <td class="title-small" colspan="10">활동경험</td>
+          </tr>
+          <tr v-for="(activity, index) in activities" :key="index">
+            <td>
+              <span>-</span>
+              <input v-if="activity.startMonth" class="input-box" type="text" style="width: 126px; margin-top: 5px; text-align: right;" readonly v-model="activity.startMonth">
+              <span v-if="activity.endMonth">~</span>
+              <input v-if="activity.endMonth" class="input-box" type="text" style="width: 126px; text-align: left;" readonly v-model="activity.endMonth">
+              <input v-if="activity.content" class="input-box" type="text" style="width: 180px;" readonly v-model="activity.content">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div v-if="store.state.languages || store.state.frameworkLibrary || store.state.server || store.state.toolDevops || store.state.environment || store.state.etc" class="block" id="page2el">
+        <table class="default-table" style="width: 100%">
+          <tr>
+            <td class="title-small" colspan="10">기술스택</td>
+          </tr>
+          <tr v-if="store.state.languages">
+            <td style="width: 30%; text-align: left;">Programin Languages</td>
+            <td style="width: 70%; text-align: right;"><input class="input-box" style="width: 100%" type="text" v-model="store.state.languages" readonly></td>
+          </tr>
+          <tr v-if="store.state.frameworkLibrary">
+            <td style="width: 30%; text-align: left;">Framework / Library</td>
+            <td style="width: 70%; text-align: right;"><input class="input-box" style="width: 100%" type="text" v-model="store.state.frameworkLibrary" readonly></td>
+          </tr>
+          <tr v-if="store.state.server">
+            <td style="width: 30%; text-align: left;">Server</td>
+            <td style="width: 70%; text-align: right;"><input class="input-box" style="width: 100%" type="text" v-model="store.state.server" readonly></td>
+          </tr>
+          <tr v-if="store.state.toolDevops">
+            <td style="width: 30%; text-align: left;">Tool / Devops</td>
+            <td style="width: 70%; text-align: right;"><textarea class="input-box" type="text" style="width: 100%; height: auto; padding: 10px; text-align: left;" v-model="store.state.toolDevops" readonly></textarea></td>
+          </tr>
+          <tr v-if="store.state.environment">
+            <td style="width: 30%; text-align: left;">Environment</td>
+            <td style="width: 70%; text-align: right;"><input class="input-box" style="width: 100%" type="text" v-model="store.state.environment" readonly></td>
+          </tr>
+          <tr v-if="store.state.etc">
+            <td style="width: 30%; text-align: left;">ETC</td>
+            <td style="width: 70%; text-align: right;"><input class="input-box" style="width: 100%" type="text" v-model="store.state.etc" readonly></td>
+          </tr>
+        </table>
+      </div>
+      <div v-if="store.state.growthData" class="block">
+        <div class="title-small">성장과정</div>
         <div>
-          <button class="btn-long" type="button" style="margin-top: 5px; margin-bottom: 50px; float: right;" @click="makePDF" id="btn-save">저장</button>
+          <textarea class="input-box" style="margin-top: 5px; width: 100%; height: 500px" type="text" v-model="store.state.growthData" readonly></textarea>
         </div>
+      </div>
+      <div v-if="store.state.reasonData" class="block">
+        <div class="title-small">지원동기</div>
+        <div>
+          <textarea class="input-box" style="margin-top: 5px; width: 100%; height: 500px" type="text" v-model="store.state.reasonData" readonly></textarea>
+        </div>
+      </div>
+      <div v-if="store.state.meritFaultData" class="block">
+        <div class="title-small">성격의 장단점</div>
+        <div>
+          <textarea class="input-box" style="margin-top: 5px; width: 100%; height: 500px" type="text" v-model="store.state.meritFaultData" readonly></textarea>
+        </div>
+      </div>
+      <div v-if="store.state.aspirationData" class="block">
+        <div class="title-small">입사 후 포부</div>
+        <div>
+          <textarea class="input-box" style="margin-top: 5px; margin-bottom: 50px; width: 100%; height: 500px" type="text" v-model="store.state.aspirationData" readonly></textarea>
+        </div>
+      </div>
+      <div>
+        <button class="btn-long" type="button" style="margin-top: 5px; margin-bottom: 50px; float: right;" @click="makePDF" id="btn-save">저장</button>
       </div>
     </div>
   </body>
@@ -464,11 +537,9 @@
   .input-box {
     width: 319px;
     height: 45px;
-    flex-shrink: 0;
-    border-radius: 10px;
-    background: #fff;
     text-align: left;
-    border: 1px solid #000;
     margin-left: 5px;
+    border: none;
+    color: black;
   }
 </style>

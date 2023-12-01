@@ -157,72 +157,37 @@
 
         // 이메일 직접 입력 여부 판별
         let email = '';
-        if ($('#emailSelect').val() == 'direct') {
-          email = $('#email').val() + '@' + $('#emailSelectDirect').val();
-        } else {
-          email = $('#email').val() + '@' + $('#emailSelect').val();
+        if($('#email').val().length >= 1) {
+          if($('#emailSelect').val() == 'direct') {
+            email = $('#email').val() + '@' + $('#emailSelectDirect').val();
+          } else {
+            email = $('#email').val() + '@' + $('#emailSelect').val();
+          }
         }
 
-        // // 학교 배열 유효 데이터 가공
-        // for (let i = 0; i < this.schools.length; i++) {
-        //   if (this.schools[i].schoolName === '') {
-        //     this.schools[i].splice(i, 1);
-        //     i--;
-        //   }
-        // }
-        //
-        // // 자격증 배열 유효 데이터 가공
-        // for (let i = 0; i < this.certificates.length; i++) {
-        //   if (this.certificates[i].name === '') {
-        //     this.certificates[i].splice(i, 1);
-        //   }
-        // }
-        //
-        // // 교육 배열 유효 데이터 가공
-        // for (let i = 0; i < this.educations.length; i++) {
-        //   if (this.educations[i].name === '') {
-        //     this.educations[i].splice(i, 1);
-        //   }
-        // }
-        //
-        // // 수상 배열 유효 데이터 가공
-        // for (let i = 0; i < this.awards.length; i++) {
-        //   if (this.awards[i].name === '') {
-        //     this.awards[i].splice(i, 1);
-        //   }
-        // }
-        //
-        // // 경력 배열 유효 데이터 가공
-        // for (let i = 0; i < this.careers.length; i++) {
-        //   if (this.careers[i].companyName === '') {
-        //     this.careers[i].splice(i, 1);
-        //   }
-        // }
-        //
-        // // 활동 배열 유효 데이터 가공
-        // for (let i = 0; i < this.activities.length; i++) {
-        //   if (this.activities[i].content === '') {
-        //     this.activities[i].splice(i, 1);
-        //   }
-        // }
+        // 전화번호 입력 여부 판별
+        let phone = '';
+        if($('#phone1').val().length === 3) {
+          phone = $('#phone1').val() + '-' + $('#phone2').val() + '-' + $('#phone3').val();
+        }
 
         // 데이터 저장
         this.storyData.push(
             {
-              imageUrl : this.imgUrl,
+              imgUrl : this.imgUrl,
               imgBlob : this.imgBlob,
               desireJob : $('#desireJob').val(),
               name : $('#name').val(),
               birthday : $('#birthday').val(),
               email : email,
-              phone : $('#phone1').val() + '-' + $('#phone2').val() + '-' + $('#phone3').val(),
+              phone : phone,
               address : $('#address').val(),
-              militaryService : $('#militaryService').val(),
+              militaryService : $('#military').val(),
               introduction : $('#introduction').val(),
               school : this.schools,
               certificate : this.certificates,
               education : this.educations,
-              awarded : this.awards,
+              award : this.awards,
               career : this.careers,
               activity : this.activities,
               languages : $('#languages').val(),
@@ -235,7 +200,28 @@
         );
 
         // store에 저장
-        store.commit('setRecordData', this.storyData);
+        store.commit('setImgUrl', this.imgUrl);
+        store.commit('setImgBlob', this.imgBlob);
+        store.commit('setDesireJob', $('#desireJob').val());
+        store.commit('setName', $('#name').val());
+        store.commit('setBirthday', $('#birthday').val());
+        store.commit('setEmail', email);
+        store.commit('setPhone', phone);
+        store.commit('setAddress', $('#address').val());
+        store.commit('setMilitary', $('#military').val());
+        store.commit('setIntroduction', $('#introduction').val());
+        store.commit('setSchool', this.schools);
+        store.commit('setCertificate', this.certificates);
+        store.commit('setEducation', this.educations);
+        store.commit('setAward', this.awards);
+        store.commit('setCareer', this.careers);
+        store.commit('setActivity', this.activities);
+        store.commit('setLanguages', $('#languages').val());
+        store.commit('setFrameworkLibrary', $('#frameworkLibrary').val());
+        store.commit('setServer', $('#server').val());
+        store.commit('setToolDevops', $('#toolDevops').val());
+        store.commit('setEnvironment', $('#environment').val());
+        store.commit('setEtc', $('#etc').val());
 
         // 성장 과정 페이지로 이동
         this.$router.push('/introduction');
@@ -265,7 +251,7 @@
       </div>
       <div class="block">
         <div class="title-small">희망직무</div>
-        <input class="input-box" type="text" style="width: 300px; text-align: center;" placeholder="희망직무" id="desire-job">
+        <input class="input-box" type="text" style="width: 300px; text-align: center;" placeholder="희망직무" id="desireJob">
       </div>
       <div class="block">
         <div class="title-small">이름</div>
@@ -305,7 +291,7 @@
       </div>
       <div class="block">
         <div class="title-small">병역</div>
-        <select class="input-box" style="width: 157px;" id="military-service">
+        <select class="input-box" style="width: 157px;" id="military">
           <option value="복무예정">복무예정</option>
           <option value="의병전역">의병전역</option>
           <option value="의가사전역">의가사전역</option>
@@ -343,7 +329,7 @@
         <div class="title-small">자격증</div>
         <table id="certificateTable">
           <tr v-for="(certificate, index) in certificates" :key="index">
-            <input class="input-box" type="month" style="width: 126px;" v-model="certificate.month">
+            <input class="input-box" type="month" style="width: 126px; margin-top: 5px" v-model="certificate.month">
             <input class="input-box" type="text" style="width: 180px;" placeholder="자격증명을 입력해 주세요" v-model="certificate.name">
           </tr>
         </table>
@@ -353,7 +339,7 @@
         <div class="title-small">교육</div>
         <table id="educationTable">
           <tr v-for="(education, index) in educations" :key="index">
-            <input class="input-box" type="month" style="width: 126px;" v-model="education.startMonth">
+            <input class="input-box" type="month" style="width: 126px; margin-top: 5px" v-model="education.startMonth">
             <span>~</span>
             <input class="input-box" type="month" style="width: 126px;" v-model="education.endMonth">
             <input class="input-box" type="text" style="width: 180px;" placeholder="교육명을 입력해 주세요" v-model="education.name">
@@ -366,18 +352,18 @@
         <div class="title-small">수상</div>
         <table id="awardTable">
           <tr v-for="(award, index) in awards" :key="index">
-            <input class="input-box" type="month" style="width: 126px;" v-model="award.month">
+            <input class="input-box" type="month" style="width: 126px; margin-top: 5px" v-model="award.month">
             <input class="input-box" type="text" style="width: 180px;" placeholder="수상명을 입력해 주세요" v-model="award.name">
             <input class="input-box" type="text" style="width: 180px;" placeholder="기관명을 입력해 주세요" v-model="award.supervisionName">
           </tr>
         </table>
-        <button class="btn-small center" type="button" style="margin-top: 10px" @click="addAwardsRow()">추가</button>
+        <button class="btn-small center" type="button" style="margin-top: 10px; margin-top: 5px" @click="addAwardsRow()">추가</button>
       </div>
       <div class="block">
         <div class="title-small">경력</div>
         <table id="careerTable">
           <tr v-for="(career, index) in careers" :key="index">
-            <input class="input-box" type="month" style="width: 126px;" v-model="career.startMonth">
+            <input class="input-box" type="month" style="width: 126px; margin-top: 5px" v-model="career.startMonth">
             <span>~</span>
             <input class="input-box" type="month" style="width: 126px;" v-model="career.endMonth">
             <input class="input-box" type="text" style="width: 180px;" placeholder="직무를 입력해 주세요" v-model="career.duty">
@@ -390,7 +376,7 @@
         <div class="title-small">활동경험</div>
         <table id="activityTable">
           <tr v-for="(activity, index) in activities" :key="index">
-            <input class="input-box" type="month" style="width: 126px;" v-model="activity.startMonth">
+            <input class="input-box" type="month" style="width: 126px; margin-top: 5px" v-model="activity.startMonth">
             <span>~</span>
             <input class="input-box" type="month" style="width: 126px;" v-model="activity.endMonth">
             <input class="input-box" type="text" style="width: 400px;" placeholder="활동 내용을 입력해 주세요" v-model="activity.content">
@@ -403,11 +389,11 @@
         <table style="width: 100%">
           <tr>
             <td style="width: 200px"><span>Programin Languages</span></td>
-            <td><input class="input-box" type="text" style="width: 100%; margin-bottom: 5px;" placeholder="사용 경험이 있는 프로그래밍 언어를 입력해 주세요" id="lamguages"></td>
+            <td><input class="input-box" type="text" style="width: 100%; margin-bottom: 5px;" placeholder="사용 경험이 있는 프로그래밍 언어를 입력해 주세요" id="languages"></td>
           </tr>
           <tr>
             <td style="width: 200px"><span>Framework / Library</span></td>
-            <td><input class="input-box" type="text" style="width: 100%; margin-bottom: 5px;" placeholder="사용 경험이 있는 프레임워크와 라이브러리를 입력해 주세요" id="framework-library"></td>
+            <td><input class="input-box" type="text" style="width: 100%; margin-bottom: 5px;" placeholder="사용 경험이 있는 프레임워크와 라이브러리를 입력해 주세요" id="frameworkLibrary"></td>
           </tr>
           <tr>
             <td style="width: 200px"><span>Server</span></td>
@@ -415,11 +401,11 @@
           </tr>
           <tr>
             <td style="width: 200px"><span>Tooling / DevOps</span></td>
-            <td><textarea class="input-box" type="text" style="width: 100%; height: 90px; padding: 10px; text-align: start; margin-bottom: 5px;" placeholder="사용 경험이 있는 툴과 데브옵스를 입력해 주세요" id="tool-devops"></textarea></td>
+            <td><textarea class="input-box" type="text" style="width: 100%; height: 90px; padding: 10px; text-align: start; margin-bottom: 5px;" placeholder="사용 경험이 있는 툴과 데브옵스를 입력해 주세요" id="toolDevops"></textarea></td>
           </tr>
           <tr>
             <td style="width: 200px"><span>Environment</span></td>
-            <td><input class="input-box" type="text" style="width: 100%; margin-bottom: 5px;" placeholder="개발시 사용해본 운영체제를 입력해 주세요" id="dnvironment"></td>
+            <td><input class="input-box" type="text" style="width: 100%; margin-bottom: 5px;" placeholder="개발시 사용해본 운영체제를 입력해 주세요" id="environment"></td>
           </tr>
           <tr>
             <td style="width: 200px"><span>ETC</span></td>

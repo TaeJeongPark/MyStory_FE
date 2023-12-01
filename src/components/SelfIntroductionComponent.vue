@@ -12,6 +12,10 @@
         characterCount: 0,
         pageCnt: 1,
         savePath: 'setGrowthData',
+        growthData: store.getters.getGrowthData,
+        reasonData: store.getters.getReasonData,
+        meritFaultData: store.getters.getMeritFaultData,
+        aspirationData: store.getters.getAspirationData,
       };
     },
     components: {
@@ -24,14 +28,13 @@
         this.characterCount = textWithoutSpaces.length;
       },
       chatGptSend() {
-        console.log($('#content').val());
+        console.log($('#content' + this.pageCnt).val());
 
         const data = {
-          sentence : $('#content').val(),
+          sentence : ($('#content' + this.pageCnt).val()),
         }
         // Axios를 사용하여 데이터를 받아오는 비동기 요청
         this.$axios.post('content/correctSentence', data)
-            // eslint-disable-next-line no-unused-vars
             .then(response => {
               // AI 첨삭 결과를 화면에 표시
               console.log(response.data);
@@ -100,20 +103,34 @@
       },
       next() {
         // store에 저장
-        store.commit(this.savePath, $('#content').val());
+        store.commit(this.savePath, ($('#content' + this.pageCnt).val()));
 
         // 다음 항목으로 변경
         this.pageCnt++;
 
         // 페이지 제어
+        this.pageControl();
+      },
+      back() {
+        // 이전 항목으로 변경
+        this.pageCnt--;
+
+        // 페이지 제어
+        this.pageControl();
+      },
+      pageControl() {
         if (this.pageCnt === 1) {
           this.savePath = 'setGrowthData';
+          this.growthData = store.getters.getGrowthData;
         } else if (this.pageCnt === 2) {
           this.savePath = 'setReasonData';
+          this.reasonData = store.getters.getReasonData;
         } else if (this.pageCnt === 3) {
           this.savePath = 'setMeritFaultData';
+          this.meritFaultData = store.getters.getMeritFaultData;
         } else if (this.pageCnt === 4) {
           this.savePath = 'setAspirationData';
+          this.aspirationData = store.getters.getAspirationData;
         } else if (this.pageCnt === 5) {
           this.$router.push('/result'); // 결과 페이지로 이동
         } else if (this.pageCnt === 0) {
@@ -122,14 +139,7 @@
 
         this.characterCountSpace = 0;
         this.characterCount = 0;
-      },
-      back() {
-        // 이전 항목으로 변경
-        this.pageCnt--;
-
-        this.characterCountSpace = 0;
-        this.characterCount = 0;
-      },
+      }
     }
   }
 </script>
@@ -150,10 +160,10 @@
         <span>공백 포함 {{ characterCountSpace }}자 / 공백 미포함 {{ characterCount }}자</span>
       </div>
       <div>
-        <textarea v-if="this.pageCnt === 1" class="input-box" type="text" placeholder="당신의 성장 과정을 적어 주세요" @keyup="cntCharacters" id="content"></textarea>
-        <textarea v-if="this.pageCnt === 2" class="input-box" type="text" placeholder="당신의 지원 동기를 적어 주세요" @keyup="cntCharacters" id="content"></textarea>
-        <textarea v-if="this.pageCnt === 3" class="input-box" type="text" placeholder="당신 성격의 장단점을 적어 주세요" @keyup="cntCharacters" id="content"></textarea>
-        <textarea v-if="this.pageCnt === 4" class="input-box" type="text" placeholder="당신의 입사 후 포부를 적어 주세요" @keyup="cntCharacters" id="content"></textarea>
+        <textarea v-if="this.pageCnt === 1" v-model="growthData" class="input-box" type="text" placeholder="당신의 성장 과정을 적어 주세요" @keyup="cntCharacters" id="content1"></textarea>
+        <textarea v-if="this.pageCnt === 2" v-model="reasonData" class="input-box" type="text" placeholder="당신의 지원 동기를 적어 주세요" @keyup="cntCharacters" id="content2"></textarea>
+        <textarea v-if="this.pageCnt === 3" v-model="meritFaultData" class="input-box" type="text" placeholder="당신 성격의 장단점을 적어 주세요" @keyup="cntCharacters" id="content3"></textarea>
+        <textarea v-if="this.pageCnt === 4" v-model="aspirationData" class="input-box" type="text" placeholder="당신의 입사 후 포부를 적어 주세요" @keyup="cntCharacters" id="content4"></textarea>
       </div>
       <div style="margin: 10px 0px">
         <table style="width: 100%">
