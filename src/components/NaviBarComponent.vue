@@ -1,21 +1,31 @@
+<script>
+  import store from "@/vuex/store";
+
+  export default {
+    name: 'NaviBarComponent',
+    computed: {
+      store() {
+        return store
+      }
+    }
+  }
+</script>
+
 <template>
   <header>
-    <nav id="nav2">
+    <nav v-if="store.state.userId" id="nav2">
       <a href="/home"><img class="logo" src="../../public/logo.svg" alt="로고" style="margin-bottom: 400px"></a>
       <ul>
-        <li><a href="#">새 스토리 만들기</a></li>
+        <li><a href="/story">새 스토리 만들기</a></li>
         <li><a href="/login">로그아웃</a></li>
         <li><a href="#">회원탈퇴</a></li>
       </ul>
     </nav>
+    <nav v-if="!store.state.userId" id="nav2">
+      <a href="/story"><img class="logo" src="../../public/logo.svg" alt="로고" style="margin-bottom: 400px"></a>
+    </nav>
   </header>
 </template>
-
-<script>
-  export default {
-    name: 'NaviBarComponent'
-  }
-</script>
 
 <style scoped>
   * {
