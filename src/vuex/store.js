@@ -11,6 +11,8 @@ export default createStore({
         aspirationData : null,
         imgUrl: null,
         imgBlob : null,
+        imgByte : null,
+        imgType : null,
         desireJob : null,
         name : null,
         birthday : null,
@@ -54,6 +56,12 @@ export default createStore({
         setImgBlob(state, data) {
             state.imgBlob = data;           // 이미지 Blob
         },
+        setImgByte(state, data) {
+            state.imgByte = data;           // 이미지 Byte
+        },
+        setImgType(state, data) {
+            state.imgType = data;           // 이미지 Type
+        },
         setDesireJob(state, data) {
             state.desireJob = data;         // 희망 직무
         },
@@ -73,7 +81,7 @@ export default createStore({
             state.address = data;           // 주소
         },
         setMilitary(state, data) {
-            state.military = data;   // 병역사항
+            state.military = data;          // 병역사항
         },
         setIntroduction(state, data) {
             state.introduction = data;      // 자기소개
@@ -88,7 +96,7 @@ export default createStore({
             state.education = data;         // 교육
         },
         setAward(state, data) {
-            state.award = data;           // 수상
+            state.award = data;             // 수상
         },
         setCareer(state, data) {
             state.career = data;            // 경력
@@ -136,6 +144,12 @@ export default createStore({
         },
         getImgBlob(state) {
             return state.imgBlob;
+        },
+        getImgByte(state) {
+            return state.imgByte;
+        },
+        getImgType(state) {
+            return state.imgType;
         },
         getDesireJob(state) {
             return state.desireJob;

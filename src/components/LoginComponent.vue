@@ -30,17 +30,17 @@
                   console.log(res);
                   if(res.data.msg === "Success") {
                     console.log("로그인 성공");
+                    store.commit('setUserId', id);
+                    this.$router.push('/home');
                   } else {
                     console.log("로그인 실패");
+                    alert("로그인에 실패했습니다.\n다시 시도해주세요.");
                   }
                 })
                 .catch(err => {
                   console.log(err);
                   console.log("로그인 실패");
                 })
-            console.log(id);
-            store.commit('setUserId', id);
-            this.$router.push('/home');
           },
           fail : error => {
             // this.$router.push("/errorPage");
@@ -55,20 +55,13 @@
 <template>
   <body class="default-margin">
   <img src="../../public/logo.svg" alt="로고" style="margin-bottom: 15%">
-  <main class="form-signin w-100 m-auto">
-    <form>
-      <h1 class="title center typing text">당신의 이야기를 들려주세요</h1>
-<!--      <kakao-login :js-key="this.kakaoKey" :get-profile-info="true" :use-login-out="true" @success="onSuccess" @fail="onFail">-->
-<!--        <button>Login with Kakao</button>-->
-      <button class="btn center" type="button" style="width: auto; height: auto" @click="kakaoLogin">
-        <img src="../../public/login/btn_kakao_login.svg" alt="카카오 로그인">
-      </button>
-<!--      </kakao-login>-->
-      <button class="btn center" type="button" style="width: auto; height: auto">
-        <img src="../../public/login/btn_non_member.svg" alt="비회원" @click="this.$router.push('/story')">
-      </button>ㅌ
-    </form>
-  </main>
+  <h1 class="title center">당신의 이야기를 들려주세요</h1>
+  <button class="btn center" type="button" style="width: auto; height: auto" @click="kakaoLogin">
+    <img src="../../public/login/btn_kakao_login.svg" alt="카카오 로그인">
+  </button>
+  <button class="btn center" type="button" style="width: auto; height: auto">
+    <img src="../../public/login/btn_non_member.svg" alt="비회원" @click="this.$router.push('/story')">
+  </button>
   </body>
 </template>
 
@@ -106,12 +99,6 @@
     user-select: none;
   }
 
-  @media (min-width: 768px) {
-    .bd-placeholder-img-lg {
-      font-size: 3.5rem;
-    }
-  }
-
   .nav-scroller {
     position: relative;
     z-index: 2;
@@ -128,9 +115,5 @@
     text-align: center;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
-  }
-
-  .bd-mode-toggle .dropdown-menu .active .bi {
-    display: block !important;
   }
 </style>

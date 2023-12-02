@@ -42,14 +42,26 @@
           reader.onload = () => {
             // 읽어온 이미지 데이터를 imageUrl에 할당하여 이미지 표시
             this.imgUrl = reader.result;
+
+            // 이미지를 Blob으로 변환
+            const imgBlob = new Blob([file], {type: file.type});
+            this.imgBlob = imgBlob;
+
+            // 이미지의 바이트 데이터 가져오기
+            const arrayBuffer = reader.result.split(',')[1]; // base64 부분 추출
+            const bytes = atob(arrayBuffer);
+            const byteNumbers = new Array(bytes.length);
+            for (let i = 0; i < bytes.length; i++) {
+              byteNumbers[i] = bytes.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            store.commit('setImgByte', byteArray);
+            store.commit('setImgType', file.type);
           };
 
           // 파일을 읽어오기
           reader.readAsDataURL(file);
 
-          // 이미지를 Blob으로 변환
-          const imgBlob = new Blob([file], {type: file.type});
-          this.imgBlob = imgBlob;
         }
       },
       addSchoolRow() {
@@ -154,6 +166,7 @@
         console.log(this.activities);
       },
       next() {
+        console.log(store.getters.getUserId);
 
         // 이메일 직접 입력 여부 판별
         let email = '';

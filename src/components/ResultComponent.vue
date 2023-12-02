@@ -5,6 +5,7 @@
   import _ from 'lodash';
   import $ from "jquery";
   import store from "@/vuex/store";
+  import axios from "axios";
 
   const getNowDate = () => {
     // 파일 이름 설정 : (default) 현재 시간 기준
@@ -67,10 +68,9 @@
     },
     data: function () {
       return {
-        classList: [],
-        tableRows: [], // 테이블의 행을 저장할 배열
-        nextId: 1, // 다음 행에 할당될 ID
-        propTitle: 'mypdf',
+        // tableRows: [], // 테이블의 행을 저장할 배열
+        // nextId: 1, // 다음 행에 할당될 ID
+        // propTitle: 'mypdf',
         imgUrl: null,
         desireJob: store.getters.getDesireJob,
         name: store.getters.getName,
@@ -79,7 +79,7 @@
         phone: store.getters.getPhone,
         address: store.getters.getAddress,
         military: store.getters.getMilitary,
-        introduce: store.getters.getIntroduction,
+        introduction: store.getters.getIntroduction,
         schools: store.getters.getSchool,
         certificates: store.getters.getCertificate,
         educations: store.getters.getEducation,
@@ -208,10 +208,74 @@
         $('#header').css('display', 'inline-block');
         $('#btn-save').css('display', 'inline-block');
       },
+      saveContent() {
+
+        // PDF 생성
+        this.makePDF();
+
+        console.log(store.getters.getUserId);
+
+        // DB 저장
+        if(store.getters.getUserId != null) {
+           const title = prompt("제목을 입력해주세요.");
+
+           console.log(store.getters.getImgByte);
+           console.log(store.getters.getImgType);
+
+          axios.post(`content/save`,{
+            id : store.state.userId,
+            title : title,
+            imgByte : store.getters.getImgByte,
+            imgType : store.getters.getImgType,
+            imgUrl : this.imgUrl,
+            desireJob : this.desireJob,
+            name : this.name,
+            birthday : this.birthday,
+            email : this.email,
+            phone : this.phone,
+            address : this.address,
+            military : this.military,
+            introduction : this.introduction,
+            certificates : this.certificates,
+            educations : this.educations,
+            awards : this.awards,
+            careers : this.careers,
+            activities : this.activities,
+            schools : this.schools,
+            growth : store.state.growthData,
+            reason : store.state.reasonData,
+            meritFault : store.state.meritFaultData,
+            aspiration : store.state.aspirationData,
+            languages : store.state.languages,
+            frameworkLibrary : store.state.frameworkLibrary,
+            server : store.state.server,
+            toolDevops : store.state.toolDevops,
+            environment : store.state.environment,
+            etc : store.state.etc,
+          })
+              .then(res => {
+                console.log(res);
+                if(res.data.msg === "Success") {
+                  console.log("저장 성공");
+                  this.$router.push("/home");
+                } else {
+                  console.log("저장 실패");
+                  alert("저장에 실패했습니다.\n다시 시도해주세요.");
+                }
+              })
+              .catch(err => {
+                console.log(err);
+                console.log("저장 실패");
+              })
+        } else {
+          this.$router.push("/");
+        }
+      },
     },
     mounted() {
       // 이미지 변환
-      if(store.state.imgBlob) {
+      if(store.state.imgByte) {
+        // this.imgUrl = `data:${store.getters.getImgType};base64,${store.getters.getImgByte}`;
         this.imgUrl = URL.createObjectURL(store.state.imgBlob);
       }
 
@@ -294,7 +358,7 @@
             <td class="title-small">나의 한 줄 소개</td>
           </tr>
           <tr>
-            <td>{{ introduce }}</td>
+            <td>{{ introduction }}</td>
           </tr>
         </table>
       </div>
@@ -454,7 +518,7 @@
         </div>
       </div>
       <div>
-        <button class="btn-long" type="button" style="margin-top: 5px; margin-bottom: 50px; float: right;" @click="makePDF" id="btn-save">저장</button>
+        <button class="btn-long" type="button" style="margin-top: 5px; margin-bottom: 50px; float: right;" @click="saveContent" id="btn-save">저장</button>
       </div>
     </div>
   </body>
