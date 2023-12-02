@@ -25,7 +25,7 @@
       <button @click="goHome"><img class="logo" src="../../public/logo.svg" alt="로고" style="margin-bottom: 400px"></button>
       <ul>
         <li><button type="button" @click="goNewStory">새 스토리 만들기</button></li>
-        <li><button type="button" href="/">로그아웃</button></li>
+        <li><a href="/">로그아웃</a></li>
         <li><button type="button">회원탈퇴</button></li>
       </ul>
     </nav>
@@ -44,12 +44,6 @@
 
   ul, ol {
     list-style: none;
-  }
-
-  a {
-    text-decoration: none;
-    color: #fff;
-    font-size: 15px;
   }
 
   nav {
@@ -86,9 +80,13 @@
     margin-left: 50px;
   }
 
-  button {
+  button, a {
     background-color: #282828;
     color: white;
     border: none;
+  }
+
+  a {
+    text-decoration: none;
   }
 </style>
