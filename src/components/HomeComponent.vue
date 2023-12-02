@@ -1,11 +1,31 @@
 <script>
   import HeaderComponent from '@/components/NaviBarComponent.vue';
+  // import axios from "axios";
+  // import store from "@/vuex/store";
 
   export default {
     name: 'HomeComponent',
     data : function(){
       return {
+        storyList : [],
       };
+    },
+    mounted() {
+      // axios.post(`login/kakao`,{
+      //   userId : store.state.userId,
+      // })
+      //     .then(res => {
+      //       console.log(res);
+      //       if(res.data.msg === "Success") {
+      //         console.log("아이템 조회 성공");
+      //       } else {
+      //         console.log("아이템 조회 실패");
+      //       }
+      //     })
+      //     .catch(err => {
+      //       console.log(err);
+      //       console.log("아이템 조회 실패");
+      //     })
     },
     components: {
       HeaderComponent
