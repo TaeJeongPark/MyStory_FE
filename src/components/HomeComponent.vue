@@ -9,15 +9,18 @@
       return {
         storyList : [],
         index : 1,
+        page : 0,
+        size : 30,
       };
     },
     mounted() {
-      axios.get(`content/list?id=${store.state.userId}`)
+      axios.get(`content/list?id=${store.state.userId}&page=${this.page}&size=${this.size}`)
           .then(res => {
             console.log(res);
             if(res.data.msg === "Success") {
               console.log("스토리 목록 조회 성공");
               this.storyList = res.data.result;
+              this.page++;
             } else {
               console.log("스토리 목록 조회 실패");
             }
@@ -33,8 +36,31 @@
     methods: {
       goDetail(id) {
         this.$router.push({name: `result`, query: {id: id}});
+      },
+      paging() {
+        const scrollHeight = document.documentElement.scrollHeight;
+        const scrollTop = document.documentElement.scrollTop;
+        const clientHeight = document.documentElement.clientHeight;
+
+        if(scrollTop + clientHeight >= scrollHeight) {
+          axios.get(`content/list?id=${store.state.userId}&page=${this.page}&size=${this.size}`)
+              .then(res => {
+                console.log(res);
+                if(res.data.msg === "Success") {
+                  console.log("스토리 목록 조회 성공");
+                  this.storyList = this.storyList.concat(res.data.result);
+                  this.page++;
+                } else {
+                  console.log("스토리 목록 조회 실패");
+                }
+              })
+              .catch(err => {
+                console.log(err);
+                console.log("스토리 목록 조회 실패");
+              })
+        }
       }
-    }
+    },
   }
 </script>
 
@@ -68,6 +94,7 @@
           </tr>
           </tbody>
         </table>
+        <button type="button" class="btn-long center" style="margin-top: 50px; margin-bottom: 50px" @click="paging">더보기</button>
       </div>
     </div>
   </body>
@@ -93,6 +120,22 @@
     color: white;
     margin-top: 100px;
     margin-bottom: 50px;
+  }
+
+  .btn-long {
+    width: 120px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #06F;
+    border-radius: 10px;
+    border: none;
+    color: #FFF;
+    text-align: center;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
   }
 
   table {
