@@ -7,6 +7,14 @@
       store() {
         return store
       }
+    },
+    methods: {
+      goNewStory() {
+        this.$router.push('/story');
+      },
+      goHome() {
+        this.$router.push('/home');
+      }
     }
   }
 </script>
@@ -14,11 +22,11 @@
 <template>
   <header>
     <nav v-if="store.state.userId" id="nav2">
-      <a href="/home"><img class="logo" src="../../public/logo.svg" alt="로고" style="margin-bottom: 400px"></a>
+      <button @click="goHome"><img class="logo" src="../../public/logo.svg" alt="로고" style="margin-bottom: 400px"></button>
       <ul>
-        <li><a href="/story">새 스토리 만들기</a></li>
-        <li><a href="/login">로그아웃</a></li>
-        <li><a href="#">회원탈퇴</a></li>
+        <li><button type="button" @click="goNewStory">새 스토리 만들기</button></li>
+        <li><button type="button" href="/">로그아웃</button></li>
+        <li><button type="button">회원탈퇴</button></li>
       </ul>
     </nav>
     <nav v-if="!store.state.userId" id="nav2">
@@ -76,5 +84,11 @@
     width: 120px;
     height: 80px;
     margin-left: 50px;
+  }
+
+  button {
+    background-color: #282828;
+    color: white;
+    border: none;
   }
 </style>
