@@ -68,24 +68,22 @@
     },
     data: function () {
       return {
-        // tableRows: [], // 테이블의 행을 저장할 배열
-        // nextId: 1, // 다음 행에 할당될 ID
-        // propTitle: 'mypdf',
-        imgUrl: null,
-        desireJob: store.getters.getDesireJob,
-        name: store.getters.getName,
-        birthday: store.getters.getBirthday,
-        email: store.getters.getEmail,
-        phone: store.getters.getPhone,
-        address: store.getters.getAddress,
-        military: store.getters.getMilitary,
-        introduction: store.getters.getIntroduction,
-        schools: store.getters.getSchool,
-        certificates: store.getters.getCertificate,
-        educations: store.getters.getEducation,
-        awards: store.getters.getAward,
-        careers: store.getters.getCareer,
-        activities: store.getters.getActivity,
+        imgUrl : null,
+        desireJob : store.getters.getDesireJob,
+        name : store.getters.getName,
+        birthday : store.getters.getBirthday,
+        email : store.getters.getEmail,
+        phone : store.getters.getPhone,
+        address : store.getters.getAddress,
+        military : store.getters.getMilitary,
+        introduction : store.getters.getIntroduction,
+        schools : store.getters.getSchool,
+        certificates : store.getters.getCertificate,
+        educations : store.getters.getEducation,
+        awards : store.getters.getAward,
+        careers : store.getters.getCareer,
+        activities : store.getters.getActivity,
+        storyId : null,
       };
     },
     components: {
@@ -216,7 +214,7 @@
         console.log(store.getters.getUserId);
 
         // DB 저장
-        if(store.getters.getUserId != null) {
+        if(this.storyId === null &&store.getters.getUserId != null) {
            const title = prompt("제목을 입력해주세요.");
 
            console.log(store.getters.getImgByte);
@@ -273,46 +271,93 @@
       },
     },
     mounted() {
+      // 기존 데이터 불러오기
+      this.storyId = this.$route.query.id;
+
+      console.log(this.storyId);
+
+      if(this.storyId != null) {
+        axios.get(`content/detail?id=${this.storyId}`)
+            .then(res => {
+              console.log(res);
+              if(res.data.msg === "Success") {
+                console.log("스토리 상세 조회 성공");
+                store.state.imgUrl = res.data.result.imgUrl;
+                store.state.desireJob = res.data.result.desireJob;
+                store.state.name = res.data.result.name;
+                store.state.birthday = res.data.result.birthday;
+                store.state.email = res.data.result.email;
+                store.state.phone = res.data.result.phone;
+                store.state.address = res.data.result.address;
+                store.state.military = res.data.result.military;
+                store.state.introduction = res.data.result.introduction;
+                store.state.certificates = res.data.result.certificates;
+                store.state.educations = res.data.result.educations;
+                store.state.awards = res.data.result.awards;
+                store.state.careers = res.data.result.careers;
+                store.state.activities = res.data.result.activities;
+                store.state.schools = res.data.result.schools;
+                store.state.growthData = res.data.result.growth;
+                store.state.reasonData = res.data.result.reason;
+                store.state.meritFaultData = res.data.result.meritFault;
+                store.state.aspirationData = res.data.result.aspiration;
+                store.state.languages = res.data.result.languages;
+                store.state.frameworkLibrary = res.data.result.frameworkLibrary;
+                store.state.server = res.data.result.server;
+                store.state.toolDevops = res.data.result.toolDevops;
+                store.state.environment = res.data.result.environment;
+                store.state.etc = res.data.result.etc;
+              } else {
+                console.log("스토리 상세 조회 실패");
+              }
+            })
+            .catch(err => {
+              console.log(err);
+              console.log("스토리 상세 조회 실패");
+            })
+      } else {
+        // 학력 배열 유효성 검사
+        let check = store.getters.getSchool[0].schoolName;
+        if(check == null || check == undefined || check == '') {
+          store.state.school = false;
+        }
+
+        // 자격증 배열 유효성 검사
+        check = store.getters.getCertificate[0].name;
+        if(check == null || check == undefined || check == '') {
+          store.state.certificate = false;
+        }
+
+        // 교육 배열 유효성 검사
+        check = store.getters.getEducation[0].supervisionName;
+        if(check == null || check == undefined || check == '') {
+          store.state.education = false;
+        }
+
+        // 수상 배열 유효성 검사
+        check = store.getters.getAward[0].supervisionName;
+        if(check == null || check == undefined || check == '') {
+          store.state.award = false;
+        }
+
+        // 경력 배열 유효성 검사
+        check = store.getters.getCareer[0].companyName;
+        if(check == null || check == undefined || check == '') {
+          store.state.career = false;
+        }
+
+        // 활동 경험 배열 유효성 검사
+        check = store.getters.getActivity[0].content;
+        if(check == null || check == undefined || check == '') {
+          store.state.activity = false;
+        }
+
+      }
+
       // 이미지 변환
       if(store.state.imgByte) {
         // this.imgUrl = `data:${store.getters.getImgType};base64,${store.getters.getImgByte}`;
         this.imgUrl = URL.createObjectURL(store.state.imgBlob);
-      }
-
-      // 학력 배열 유효성 검사
-      let check = store.getters.getSchool[0].schoolName;
-      if(check == null || check == undefined || check == '') {
-        store.state.school = false;
-      }
-
-      // 자격증 배열 유효성 검사
-      check = store.getters.getCertificate[0].name;
-      if(check == null || check == undefined || check == '') {
-        store.state.certificate = false;
-      }
-
-      // 교육 배열 유효성 검사
-      check = store.getters.getEducation[0].supervisionName;
-      if(check == null || check == undefined || check == '') {
-        store.state.education = false;
-      }
-
-      // 수상 배열 유효성 검사
-      check = store.getters.getAward[0].supervisionName;
-      if(check == null || check == undefined || check == '') {
-        store.state.award = false;
-      }
-
-      // 경력 배열 유효성 검사
-      check = store.getters.getCareer[0].companyName;
-      if(check == null || check == undefined || check == '') {
-        store.state.career = false;
-      }
-
-      // 활동 경험 배열 유효성 검사
-      check = store.getters.getActivity[0].content;
-      if(check == null || check == undefined || check == '') {
-        store.state.activity = false;
       }
     }
   }

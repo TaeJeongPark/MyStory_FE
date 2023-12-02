@@ -1,34 +1,39 @@
 <script>
   import HeaderComponent from '@/components/NaviBarComponent.vue';
-  // import axios from "axios";
-  // import store from "@/vuex/store";
+  import axios from "axios";
+  import store from "@/vuex/store";
 
   export default {
     name: 'HomeComponent',
     data : function(){
       return {
         storyList : [],
+        index : 1,
       };
     },
     mounted() {
-      // axios.post(`login/kakao`,{
-      //   userId : store.state.userId,
-      // })
-      //     .then(res => {
-      //       console.log(res);
-      //       if(res.data.msg === "Success") {
-      //         console.log("아이템 조회 성공");
-      //       } else {
-      //         console.log("아이템 조회 실패");
-      //       }
-      //     })
-      //     .catch(err => {
-      //       console.log(err);
-      //       console.log("아이템 조회 실패");
-      //     })
+      axios.get(`content/list?id=${store.state.userId}`)
+          .then(res => {
+            console.log(res);
+            if(res.data.msg === "Success") {
+              console.log("스토리 목록 조회 성공");
+              this.storyList = res.data.result;
+            } else {
+              console.log("스토리 목록 조회 실패");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            console.log("스토리 목록 조회 실패");
+          })
     },
     components: {
       HeaderComponent
+    },
+    methods: {
+      goDetail(id) {
+        this.$router.push({name: `result`, query: {id: id}});
+      }
     }
   }
 </script>
@@ -53,28 +58,13 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td>3</td>
+          <tr v-for="(story, index) in storyList" :key="index">
+            <td>{{ index + 1 }}</td>
             <th>
-              <a href="#!">[공지사항] 개인정보 처리방침 변경안내처리방침</a>
-              <p>테스트</p>
+              <button type="button" @click="goDetail(story.id)">{{ story.title }}</button>
             </th>
-            <td>2017.07.13</td>
-            <td>2017.07.13</td>
-          </tr>
-
-          <tr>
-            <td>2</td>
-            <th><a href="#!">공지사항 안내입니다. 이용해주셔서 감사합니다</a></th>
-            <td>2017.06.15</td>
-            <td>2017.07.13</td>
-          </tr>
-
-          <tr>
-            <td>1</td>
-            <th><a href="#!">공지사항 안내입니다. 이용해주셔서 감사합니다</a></th>
-            <td>2017.06.15</td>
-            <td>2017.07.13</td>
+            <td>{{ story.regTime }}</td>
+            <td>{{ story.updateTime }}</td>
           </tr>
           </tbody>
         </table>
@@ -138,16 +128,13 @@
     border-bottom: 1px solid #ccc;
   }
 
-  .board-table a {
+  .board-table button {
     color: white;
     display: inline-block;
     line-height: 1.4;
     word-break: break-all;
     vertical-align: middle;
-  }
-
-  .board-table a:hover {
-    text-decoration: underline;
+    border: none;
   }
 
   .board-table th {
