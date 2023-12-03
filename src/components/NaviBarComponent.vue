@@ -1,5 +1,6 @@
 <script>
   import store from "@/vuex/store";
+  import axios from "axios";
 
   export default {
     name: 'NaviBarComponent',
@@ -14,6 +15,25 @@
       },
       goHome() {
         this.$router.push('/home');
+      },
+      withdraw() {
+        axios.get(`withdraw/kakao?accessToken=${store.state.accessToken}&id=${store.state.userId}`)
+            .then(res => {
+              console.log(res);
+              if(res.data.msg === "Success") {
+                console.log("회원 탈퇴 성공");
+                alert("회원 탈퇴가 완료되었습니다.");
+                this.$router.push('/');
+              } else {
+                console.log("회원 탈퇴 실패");
+                alert("회원 탈퇴가 실패했습니다.");
+              }
+            })
+            .catch(err => {
+              console.log(err);
+              console.log("회원 탈퇴 실패");
+              alert("회원 탈퇴가 실패했습니다.");
+            })
       }
     }
   }
@@ -26,7 +46,7 @@
       <ul>
         <li><button type="button" @click="goNewStory">새 스토리 만들기</button></li>
         <li><a href="/">로그아웃</a></li>
-        <li><button type="button">회원탈퇴</button></li>
+        <li><button type="button" @click="withdraw">회원탈퇴</button></li>
       </ul>
     </nav>
     <nav v-if="!store.state.userId" id="nav2">

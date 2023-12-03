@@ -31,6 +31,7 @@
                   if(res.data.msg === "Success") {
                     console.log("로그인 성공");
                     store.commit('setUserId', id);
+                    store.commit('setAccessToken', window.Kakao.Auth.getAccessToken());
                     this.$router.push('/home');
                   } else {
                     console.log("로그인 실패");

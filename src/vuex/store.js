@@ -5,6 +5,7 @@ import { createStore } from 'vuex';
 export default createStore({
     state: {
         userId : null,
+        accessToken : null,
         growthData : null,
         reasonData : null,
         meritFaultData : null,
@@ -36,7 +37,10 @@ export default createStore({
     },
     mutations: {
         setUserId(state, data) {
-            state.userId = data;          // 사용자 정보
+            state.userId = data;            // 사용자 정보
+        },
+        setAccessToken(state, data) {
+            state.accessToken = data;       // 액세스 토큰
         },
         setGrowthData(state, data) {
             state.growthData = data;        // 성장 과정 정보
@@ -126,6 +130,9 @@ export default createStore({
     getters: {
         getUserId(state) {
             return state.userId;
+        },
+        getAccessToken(state) {
+            return state.accessToken;
         },
         getGrowthData(state) {
             return state.growthData;

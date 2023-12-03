@@ -16,6 +16,7 @@
         reasonData: store.getters.getReasonData,
         meritFaultData: store.getters.getMeritFaultData,
         aspirationData: store.getters.getAspirationData,
+        result: null,
       };
     },
     components: {
@@ -38,8 +39,7 @@
             .then(response => {
               // AI 첨삭 결과를 화면에 표시
               console.log(response.data);
-              $('#result').val(response.data.result);
-              $('#result').css('display', 'inline-block');
+              this.result = response.data.result;
             })
             .catch(error => {
               console.error('Error fetching data:', error);
@@ -94,8 +94,7 @@
               console.log(checkedText);
 
               // 맞춤법 검사 결과를 화면에 표시
-              $('#result').val(checkedText);
-              $('#result').css('display', 'inline-block');
+              this.result = response.data.result;
             })
             .catch(error => {
               console.error('맞춤법 검사 도중 오류가 발생했습니다.', error);
@@ -107,6 +106,7 @@
 
         // 다음 항목으로 변경
         this.pageCnt++;
+        this.result = false;
 
         // 페이지 제어
         this.pageControl();
@@ -136,6 +136,8 @@
         } else if (this.pageCnt === 0) {
           this.$router.push('/story');  // 이력서 페이지로 이동
         }
+
+        this.result = false;
 
         this.characterCountSpace = 0;
         this.characterCount = 0;
@@ -184,7 +186,7 @@
         </table>
       </div>
       <div>
-        <textarea class="input-box" style="margin-top: 5px; margin-bottom: 100px; background-color: lightgray; display: none;" type="text" readonly id="result"></textarea>
+        <textarea v-if="this.result" class="input-box" style="margin-top: 5px; margin-bottom: 100px; background-color: lightgray;" type="text" readonly id="result"></textarea>
       </div>
     </div>
   </body>

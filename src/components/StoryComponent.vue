@@ -16,20 +16,15 @@
         awards: [{month: '', name: '', supervisionName: ''}],
         careers: [{startMonth: '', endMonth: '', duty: '', companyName: ''}],
         activities: [{startMonth: '', endMonth: '', content: ''}],
+        emailSelect: 'gmail.com',
       };
     },
     components: {
       HeaderComponent
     },
     methods: {
-      emailDirectSelect() {
-        $('#emailSelect').change(function () {
-          if ($(this).val() === 'direct') {
-            $('#selectDirect').css('display', 'inline-block');
-          } else {
-            $('#selectDirect').css('display', 'none');
-          }
-        });
+      emailSelectChange() {
+        this.emailSelect = $('#emailSelect').val();
       },
       handleFileUpload(event) {
         const file = event.target.files[0];
@@ -171,7 +166,7 @@
         // 이메일 직접 입력 여부 판별
         let email = '';
         if($('#email').val().length >= 1) {
-          if($('#emailSelect').val() == 'direct') {
+          if($('#emailSelect').val() === 'direct') {
             email = $('#email').val() + '@' + $('#emailSelectDirect').val();
           } else {
             email = $('#email').val() + '@' + $('#emailSelect').val();
@@ -278,7 +273,7 @@
         <div class="title-small">이메일 주소</div>
         <input class="input-box" type="text" style="width: 130px; text-align: center;" placeholder="이메일 주소" id="email">
         <span>@</span>
-        <select class="input-box" style="width: 157px;" @change="emailDirectSelect" id="emailSelect">
+        <select class="input-box" style="width: 157px;" @change="emailSelectChange" id="emailSelect">
           <option value="gmail.com">gmail.com</option>
           <option value="naver.com">naver.com</option>
           <option value="daum.net">daum.net</option>
@@ -288,7 +283,7 @@
           <option value="msn.com">msn.com</option>
           <option value="direct">직접입력</option>
         </select>
-        <input class="input-box" type="text" style="width: 130px; margin-left: 10px; display:none; text-align: center;" placeholder="직접입력" id="emailSelectDirect">
+        <input v-if="this.emailSelect === 'direct'" class="input-box" type="text" style="width: 130px; margin-left: 10px; text-align: center;" placeholder="직접입력" id="emailSelectDirect">
       </div>
       <div class="block">
         <div class="title-small">핸드폰 번호</div>

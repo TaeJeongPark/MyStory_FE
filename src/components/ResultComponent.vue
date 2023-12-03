@@ -212,9 +212,10 @@
         this.makePDF();
 
         console.log(store.getters.getUserId);
+        console.log(this.storyId);
 
         // DB 저장
-        if(this.storyId === null &&store.getters.getUserId != null) {
+        // if(this.storyId === null || this.storyId === undefined || this.storyId < 0) {
            const title = prompt("제목을 입력해주세요.");
 
            console.log(store.getters.getImgByte);
@@ -265,9 +266,9 @@
                 console.log(err);
                 console.log("저장 실패");
               })
-        } else {
-          this.$router.push("/");
-        }
+        // } else {
+        //   this.$router.push("/");
+        // }
       },
     },
     mounted() {
@@ -355,7 +356,7 @@
       }
 
       // 이미지 변환
-      if(store.state.imgByte) {
+      if(store.state.imgBlob) {
         // this.imgUrl = `data:${store.getters.getImgType};base64,${store.getters.getImgByte}`;
         this.imgUrl = URL.createObjectURL(store.state.imgBlob);
       }
@@ -541,7 +542,7 @@
       <div v-if="store.state.growthData" class="block">
         <div class="title-small">성장과정</div>
         <div>
-          <textarea class="input-box" style="margin-top: 5px; width: 100%; height: 500px" type="text" v-model="store.state.growthData" readonly></textarea>
+          <textarea class="input-box" style="border: black 1px; margin-top: 5px; width: 100%; height: 500px" type="text" v-model="store.state.growthData" readonly></textarea>
         </div>
       </div>
       <div v-if="store.state.reasonData" class="block">
